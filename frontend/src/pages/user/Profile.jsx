@@ -86,7 +86,7 @@ const Profile = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 md:gap-10">
 
                     {/* Left Sidebar: Navigation & Quick Info */}
-                    <div className="lg:col-span-1 space-y-6 order-2 lg:order-1">
+                    <div className="lg:col-span-1 space-y-6 order-1">
                         <div className="bg-white rounded-[32px] md:rounded-[40px] border border-gray-100 shadow-sm overflow-hidden text-center p-6 md:p-8">
                             <div className="relative w-24 h-24 md:w-32 md:h-32 mx-auto mb-6">
                                 <img
@@ -157,7 +157,7 @@ const Profile = () => {
                         </div>
 
                         {/* Verification Card */}
-                        <div className="bg-slate-900 rounded-[32px] p-6 md:p-8 text-white relative overflow-hidden group">
+                        <div className="bg-slate-900 rounded-[32px] p-6 md:p-8 text-white relative overflow-hidden group border border-slate-800">
                             <div className="absolute top-0 right-0 w-32 h-32 bg-blue-600/20 blur-3xl -mr-16 -mt-16"></div>
                             <h3 className="text-sm font-black mb-3 relative z-10 flex items-center gap-2">
                                 <ShieldCheck size={18} className="text-blue-400" /> Account Status
@@ -171,7 +171,7 @@ const Profile = () => {
                     </div>
 
                     {/* Right Content: Details & Editing */}
-                    <div className="lg:col-span-3 space-y-6 md:space-y-8 order-1 lg:order-2">
+                    <div className="lg:col-span-3 space-y-6 md:space-y-8 order-2">
                         <div className="bg-white rounded-[32px] md:rounded-[40px] border border-gray-100 shadow-sm p-6 md:p-10">
                             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-8 md:mb-10">
                                 <div>
