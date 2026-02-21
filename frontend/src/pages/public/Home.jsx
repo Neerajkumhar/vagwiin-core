@@ -1,12 +1,15 @@
 import React from 'react';
 import Navbar from '../../components/Navbar';
 import Hero from '../../components/Hero';
-import CategoryFilters from '../../components/CategoryFilters';
+import BrandFilters from '../../components/BrandFilters';
 import Sidebar from '../../components/Sidebar';
 import ProductGrid from '../../components/ProductGrid';
 import { Link } from 'react-router-dom';
+import { useState } from 'react';
 
 const Home = () => {
+    const [selectedBrand, setSelectedBrand] = useState('All');
+
     return (
         <div className="min-h-screen bg-white font-sans selection:bg-blue-100 selection:text-blue-900">
             <Navbar />
@@ -14,26 +17,21 @@ const Home = () => {
             <main>
                 <Hero />
 
-                <section className="container mx-auto px-6 py-16">
-                    <div className="flex flex-col md:flex-row items-center justify-between gap-8 mb-12">
-                        <h2 className="text-3xl font-bold text-gray-900">Featured Products</h2>
-                        <CategoryFilters />
+                <section className="container mx-auto px-4 sm:px-6 py-8 lg:py-16">
+                    <div className="mb-8 md:mb-12">
+                        <h2 className="text-2xl lg:text-3xl font-bold text-gray-900">Featured Products</h2>
                     </div>
 
-                    <div className="flex flex-col lg:flex-row gap-12">
-                        <Sidebar />
-                        <div className="flex-1">
-                            <ProductGrid />
+                    <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
+                        <div className="hidden lg:block">
+                            <Sidebar onFilterChange={setSelectedBrand} />
+                        </div>
+                        <div className="lg:hidden mb-8">
+                            <BrandFilters layout="horizontal" onFilterChange={setSelectedBrand} />
+                        </div>
 
-                            <div className="mt-20">
-                                <div className="flex items-center justify-between mb-8">
-                                    <h2 className="text-2xl font-bold text-gray-900">Related Refurbished Laptops</h2>
-                                    <Link to="/shop" className="text-blue-600 font-semibold hover:underline flex items-center gap-1">
-                                        See All
-                                    </Link>
-                                </div>
-                                <ProductGrid />
-                            </div>
+                        <div className="flex-1">
+                            <ProductGrid brand={selectedBrand} />
                         </div>
                     </div>
                 </section>

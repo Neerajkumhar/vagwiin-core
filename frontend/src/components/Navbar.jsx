@@ -12,6 +12,9 @@ const Navbar = () => {
     const user = authService.getCurrentUser();
     const [notifications, setNotifications] = useState([]);
     const [showNotifications, setShowNotifications] = useState(false);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+    const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
     useEffect(() => {
         if (user) {
@@ -61,8 +64,8 @@ const Navbar = () => {
         <header className="sticky top-0 z-50">
             {!isAdminOrTechPage && <TopBar />}
             <nav className="flex items-center justify-between px-6 py-4 bg-white/90 backdrop-blur-md border-b border-gray-100">
-                <Link to="/" className="flex items-center">
-                    <img src="/img/logo.png" alt="Vagwiin Logo" className="h-10 w-auto object-contain" />
+                <Link to="/" className="flex items-center shrink-0">
+                    <img src="/img/logo.png" alt="Vagwiin Logo" className="h-8 md:h-10 w-auto object-contain" />
                 </Link>
 
                 <div className="hidden md:flex items-center gap-8 text-gray-600 font-medium">
@@ -172,21 +175,65 @@ const Navbar = () => {
                                     className="w-8 h-8 rounded-full"
                                 />
                                 <span className="hidden lg:block text-sm font-bold text-gray-700">{(user?.fullName || 'User').split(' ')[0]}</span>
-                                <Menu size={20} className="text-gray-600" />
                             </Link>
+                            <button onClick={toggleMenu} className="md:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                                <Menu size={24} className="text-gray-600" />
+                            </button>
                         </div>
                     ) : (
                         <div className="flex items-center gap-2 sm:gap-3">
-                            <Link to="/login" className="text-gray-600 font-semibold hover:text-blue-600 transition-colors px-2 text-sm sm:text-base">
+                            <Link to="/login" className="hidden sm:block text-gray-600 font-semibold hover:text-blue-600 transition-colors px-2">
                                 Sign In
                             </Link>
-                            <Link to="/signup" className="bg-blue-600 text-white px-3 sm:px-5 py-2 rounded-xl font-semibold hover:bg-blue-700 transition-all shadow-md shadow-blue-200 active:scale-95 text-sm sm:text-base">
+                            <Link to="/signup" className="hidden sm:block bg-blue-600 text-white px-5 py-2 rounded-xl font-semibold hover:bg-blue-700 transition-all shadow-md shadow-blue-200 active:scale-95">
                                 Join Us
                             </Link>
+                            <button onClick={toggleMenu} className="md:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                                <Menu size={24} className="text-gray-600" />
+                            </button>
                         </div>
                     )}
                 </div>
             </nav>
+
+            {/* Mobile Menu Overlay */}
+            {isMenuOpen && (
+                <div className="fixed inset-0 z-[60] md:hidden animate-in fade-in duration-200">
+                    <div className="absolute inset-0 bg-black/5 backdrop-blur-sm" onClick={toggleMenu} />
+                    <div className="absolute right-0 top-0 bottom-0 w-3/4 max-w-sm bg-white shadow-2xl animate-in slide-in-from-right-full duration-300">
+                        <div className="p-6 flex flex-col h-full">
+                            <div className="flex items-center justify-between mb-8">
+                                <span className="font-black text-xl text-gray-900 tracking-tighter italic">VAGWIIN.</span>
+                                <button onClick={toggleMenu} className="p-2 hover:bg-gray-100 rounded-lg text-gray-400">
+                                    <LogOut size={20} className="rotate-180" />
+                                </button>
+                            </div>
+
+                            <div className="flex flex-col gap-1">
+                                <Link onClick={toggleMenu} to="/" className={`p-4 rounded-2xl font-bold transition-all ${isActive('/') ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50'}`}>Home</Link>
+                                <Link onClick={toggleMenu} to="/shop" className={`p-4 rounded-2xl font-bold transition-all ${isActive('/shop') ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50'}`}>Shop</Link>
+                                <Link onClick={toggleMenu} to="/warranty" className={`p-4 rounded-2xl font-bold transition-all ${isActive('/warranty') ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50'}`}>Warranty Status</Link>
+                                <Link onClick={toggleMenu} to="/about" className={`p-4 rounded-2xl font-bold transition-all ${isActive('/about') ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50'}`}>About Us</Link>
+                                <Link onClick={toggleMenu} to="/contact" className={`p-4 rounded-2xl font-bold transition-all ${isActive('/contact') ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-50'}`}>Contact</Link>
+                            </div>
+
+                            <div className="mt-auto pt-8 border-t border-gray-100 flex flex-col gap-4">
+                                {!user ? (
+                                    <>
+                                        <Link onClick={toggleMenu} to="/login" className="w-full py-4 text-center font-bold text-gray-600 border-2 border-gray-100 rounded-2xl hover:bg-gray-50 transition-all">Sign In</Link>
+                                        <Link onClick={toggleMenu} to="/signup" className="w-full py-4 text-center font-bold text-white bg-blue-600 rounded-2xl shadow-lg shadow-blue-100 active:scale-95 transition-all">Create Account</Link>
+                                    </>
+                                ) : (
+                                    <button onClick={() => { handleLogout(); toggleMenu(); }} className="w-full py-4 flex items-center justify-center gap-2 font-bold text-red-500 bg-red-50 rounded-2xl active:scale-95 transition-all">
+                                        <LogOut size={18} />
+                                        Log Out
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </header>
     );
 };

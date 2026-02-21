@@ -6,7 +6,7 @@ const Hero = () => {
         <section className="relative bg-[#fcfdff] py-16 overflow-hidden">
             <div className="container mx-auto px-6 flex flex-col lg:flex-row items-center justify-between gap-12">
                 <div className="max-w-2xl text-center lg:text-left">
-                    <h1 className="text-5xl lg:text-7xl font-bold text-gray-900 leading-tight mb-6">
+                    <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold text-gray-900 leading-tight mb-6">
                         Buy Refurbished <br />
                         <span className="text-blue-600">Laptops</span> with <br />
                         <span className="text-blue-400">Warranty</span>

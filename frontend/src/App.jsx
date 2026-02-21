@@ -189,56 +189,6 @@ function App() {
           <Route path="*" element={<Home />} />
         </Routes>
 
-        {/* Shared Styles */}
-        <style>{`
-        @keyframes float {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-20px); }
-        }
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-        @keyframes fadeInUp {
-          from { 
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to { 
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        @keyframes zoomIn {
-          from {
-            opacity: 0;
-            transform: scale(0.95);
-          }
-          to {
-            opacity: 1;
-            transform: scale(1);
-          }
-        }
-        .animate-float {
-          animation: float 6s ease-in-out infinite;
-        }
-        .animate-in {
-          animation-duration: 0.5s;
-          animation-fill-mode: both;
-        }
-        .fade-in {
-          animation-name: fadeIn;
-        }
-        .fade-in-up {
-          animation-name: fadeInUp;
-        }
-        .zoom-in {
-          animation-name: zoomIn;
-        }
-        body {
-          scroll-behavior: smooth;
-        }
-      `}</style>
       </Router>
     </CartProvider>
   );
