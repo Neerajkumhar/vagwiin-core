@@ -82,49 +82,49 @@ const CustomerOrderDetail = () => {
                 <Navbar />
             </div>
 
-            <main className="container mx-auto px-6 py-10 max-w-5xl no-print">
-                <Link to="/my-orders" className="flex items-center gap-2 text-blue-600 font-bold text-sm mb-6 hover:underline">
-                    <ChevronLeft size={16} /> Back to My Orders
+            <main className="container mx-auto px-4 sm:px-6 py-6 md:py-10 max-w-5xl no-print">
+                <Link to="/my-orders" className="flex items-center gap-2 text-blue-600 font-bold text-xs md:text-sm mb-6 hover:underline w-fit">
+                    <ChevronLeft size={14} md:size={16} /> Back to My Orders
                 </Link>
 
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
-                    <div>
-                        <h1 className="text-2xl font-black text-gray-900 tracking-tight">Order #{order._id}</h1>
-                        <div className="flex items-center gap-4 mt-2">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-6 mb-8">
+                    <div className="text-center md:text-left">
+                        <h1 className="text-xl md:text-2xl font-black text-gray-900 tracking-tight font-mono">Order #{order._id}</h1>
+                        <div className="flex items-center justify-center md:justify-start gap-4 mt-2">
                             <span className="px-3 py-1 bg-blue-50 text-blue-600 rounded-lg text-[10px] font-black uppercase tracking-wider">
                                 {order.status}
                             </span>
-                            <p className="text-gray-400 text-sm font-medium flex items-center gap-1">
+                            <p className="text-gray-400 text-xs md:text-sm font-medium flex items-center gap-1">
                                 <Calendar size={14} /> {formatDate(order.createdAt)}
                             </p>
                         </div>
                     </div>
                     <button
                         onClick={() => window.print()}
-                        className="flex items-center gap-2 px-6 py-3 bg-slate-900 text-white rounded-2xl font-bold hover:bg-slate-800 transition-all shadow-lg active:scale-95 text-sm"
+                        className="flex items-center justify-center gap-2 w-full md:w-auto px-6 py-3 bg-slate-900 text-white rounded-xl md:rounded-2xl font-bold hover:bg-slate-800 transition-all shadow-lg active:scale-95 text-xs md:text-sm"
                     >
-                        <Printer size={18} /> Print Invoice
+                        <Printer size={16} md:size={18} /> Print Invoice
                     </button>
                 </div>
 
                 {/* Allocated Model Number Section */}
                 {order.items.some(i => i.serialNumbers?.length > 0) && (
-                    <div className="bg-white p-6 rounded-3xl border border-blue-100 shadow-sm mb-8 group hover:border-blue-200 transition-colors animate-in fade-in slide-in-from-top-4 duration-700">
-                        <div className="flex items-center gap-4 mb-4">
-                            <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600">
-                                <Package size={24} />
+                    <div className="bg-white p-5 md:p-6 rounded-2xl md:rounded-3xl border border-blue-100 shadow-sm mb-8 group hover:border-blue-200 transition-colors animate-in fade-in slide-in-from-top-4 duration-700">
+                        <div className="flex items-center gap-3 md:gap-4 mb-4 md:mb-6">
+                            <div className="w-10 h-10 md:w-12 md:h-12 bg-blue-50 rounded-xl md:rounded-2xl flex items-center justify-center text-blue-600">
+                                <Package size={20} md:size={24} />
                             </div>
                             <div>
-                                <h3 className="text-[10px] font-black text-blue-600 uppercase tracking-[0.2em] mb-1">Allocated Model Numbers</h3>
-                                <p className="text-xs font-bold text-gray-500 italic">Unique identifiers for your hardware units</p>
+                                <h3 className="text-[8px] md:text-[10px] font-black text-blue-600 uppercase tracking-[0.2em] mb-0.5 md:mb-1">Allocated Model Numbers</h3>
+                                <p className="text-[10px] md:text-xs font-bold text-gray-500 italic">Unique identifiers for your hardware units</p>
                             </div>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
                             {order.items.map(item => (
                                 item.serialNumbers?.map((sn, idx) => (
-                                    <div key={`${item._id}-${idx}`} className="bg-gray-50 p-4 rounded-2xl border border-gray-100 flex flex-col gap-1">
-                                        <span className="text-[8px] font-black text-gray-400 uppercase tracking-widest">{item.name} (Unit {idx + 1})</span>
-                                        <span className="text-sm font-black text-gray-900 tracking-tight uppercase">{sn}</span>
+                                    <div key={`${item._id}-${idx}`} className="bg-gray-50 p-4 rounded-xl md:rounded-2xl border border-gray-100 flex flex-col gap-1 hover:bg-white transition-colors">
+                                        <span className="text-[7px] md:text-[8px] font-black text-gray-400 uppercase tracking-widest">{item.name} (Unit {idx + 1})</span>
+                                        <span className="text-xs md:text-sm font-black text-gray-900 tracking-tight uppercase font-mono">{sn}</span>
                                     </div>
                                 ))
                             ))}
@@ -132,27 +132,27 @@ const CustomerOrderDetail = () => {
                     </div>
                 )}
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
                     {/* Left: Items */}
                     <div className="lg:col-span-2 space-y-6">
-                        <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
-                            <div className="px-6 py-4 border-b border-gray-50 bg-gray-50/50">
-                                <h3 className="text-sm font-black text-gray-900 flex items-center gap-2">
-                                    <Package size={16} className="text-blue-600" /> Order Items
+                        <div className="bg-white rounded-[24px] md:rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
+                            <div className="px-5 py-4 border-b border-gray-50 bg-gray-50/50">
+                                <h3 className="text-xs md:text-sm font-black text-gray-900 flex items-center gap-2">
+                                    <Package size={14} md:size={16} className="text-blue-600" /> Order Items
                                 </h3>
                             </div>
                             <div className="divide-y divide-gray-50">
                                 {order.items.map((item, idx) => (
-                                    <div key={idx} className="p-6 flex items-center gap-6">
-                                        <div className="w-16 h-16 bg-gray-50 rounded-2xl p-2 border border-gray-100 shrink-0">
+                                    <div key={idx} className="p-4 md:p-6 flex flex-row items-center gap-4 md:gap-6">
+                                        <div className="w-14 h-14 md:w-16 md:h-16 bg-gray-50 rounded-xl md:rounded-2xl p-2 border border-gray-100 shrink-0 flex items-center justify-center">
                                             <img src={item.image} alt={item.name} className="w-full h-full object-contain" />
                                         </div>
-                                        <div className="flex-1">
-                                            <h4 className="font-bold text-gray-900 text-sm leading-tight">{item.name}</h4>
-                                            <p className="text-xs text-gray-400 font-medium mt-1">Qty: {item.quantity}</p>
+                                        <div className="flex-1 min-w-0">
+                                            <h4 className="font-bold text-gray-900 text-xs md:text-sm leading-tight truncate">{item.name}</h4>
+                                            <p className="text-[10px] md:text-xs text-gray-400 font-bold mt-1">Qty: {item.quantity}</p>
                                         </div>
-                                        <div className="text-right">
-                                            <p className="font-black text-gray-900 text-sm whitespace-nowrap">₹{item.price.toLocaleString()} x {item.quantity}</p>
+                                        <div className="text-right shrink-0">
+                                            <p className="font-black text-gray-900 text-xs md:text-sm whitespace-nowrap font-mono">₹{item.price.toLocaleString()}</p>
                                         </div>
                                     </div>
                                 ))}
@@ -162,35 +162,35 @@ const CustomerOrderDetail = () => {
 
                     {/* Right: Summary */}
                     <div className="space-y-6">
-                        <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
-                            <h3 className="text-sm font-black text-gray-900 mb-6 flex items-center gap-2">
-                                <CreditCard size={16} className="text-blue-600" /> Summary
+                        <div className="bg-white p-5 md:p-6 rounded-[24px] md:rounded-3xl border border-gray-100 shadow-sm">
+                            <h3 className="text-xs md:text-sm font-black text-gray-900 mb-6 flex items-center gap-2">
+                                <CreditCard size={14} md:size={16} className="text-blue-600" /> Summary
                             </h3>
                             <div className="space-y-4">
-                                <div className="flex justify-between text-xs font-bold text-gray-500 uppercase">
+                                <div className="flex justify-between text-[10px] font-bold text-gray-500 uppercase tracking-widest">
                                     <span>Subtotal</span>
-                                    <span className="text-gray-900">₹{order.subtotal.toLocaleString()}</span>
+                                    <span className="text-gray-900 font-mono">₹{order.subtotal.toLocaleString()}</span>
                                 </div>
-                                <div className="flex justify-between text-xs font-bold text-gray-500 uppercase">
+                                <div className="flex justify-between text-[10px] font-bold text-gray-500 uppercase tracking-widest">
                                     <span>Tax (GST 18%)</span>
-                                    <span className="text-gray-900">₹{order.taxPrice.toLocaleString()}</span>
+                                    <span className="text-gray-900 font-mono">₹{order.taxPrice.toLocaleString()}</span>
                                 </div>
                                 <div className="pt-4 border-t border-gray-100 flex justify-between items-center">
-                                    <span className="text-sm font-black uppercase">Total</span>
-                                    <span className="text-xl font-black text-blue-600">₹{order.totalPrice.toLocaleString()}</span>
+                                    <span className="text-xs md:text-sm font-black uppercase">Grand Total</span>
+                                    <span className="text-lg md:text-xl font-black text-blue-600 font-mono">₹{order.totalPrice.toLocaleString()}</span>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
-                            <h3 className="text-sm font-black text-gray-900 mb-4 flex items-center gap-2">
-                                <MapPin size={16} className="text-blue-600" /> Shipping
+                        <div className="bg-white p-5 md:p-6 rounded-[24px] md:rounded-3xl border border-gray-100 shadow-sm">
+                            <h3 className="text-xs md:text-sm font-black text-gray-900 mb-4 flex items-center gap-2">
+                                <MapPin size={14} md:size={16} className="text-blue-600" /> Shipping
                             </h3>
-                            <div className="text-xs font-medium text-gray-600 space-y-1">
-                                <p className="font-black text-gray-900 text-sm">{order.shippingAddress.fullName}</p>
-                                <p>{order.shippingAddress.address}</p>
+                            <div className="text-[11px] md:text-xs font-medium text-gray-600 space-y-1">
+                                <p className="font-black text-gray-900 text-xs md:text-sm mb-1">{order.shippingAddress.fullName}</p>
+                                <p className="leading-relaxed">{order.shippingAddress.address}</p>
                                 <p>{order.shippingAddress.city}</p>
-                                <p className="pt-2 font-bold text-gray-400">T: {order.shippingAddress.phone}</p>
+                                <p className="pt-2 font-black text-gray-400 border-t border-gray-50 mt-2">T: {order.shippingAddress.phone}</p>
                             </div>
                         </div>
                     </div>
