@@ -1,6 +1,7 @@
 import axios from 'axios';
+import { BASE_URL } from '../config';
 
-const API_URL = 'http://localhost:5002/api/complaints';
+const API_URL = `${BASE_URL}/complaints`;
 
 const bookDiagnosis = async (complaintData) => {
     const token = localStorage.getItem('token');

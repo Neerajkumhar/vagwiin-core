@@ -1,6 +1,7 @@
 import axios from 'axios';
+import { BASE_URL } from '../config';
 
-const API_URL = 'http://localhost:5002/api/auth'; // Pointing to auth routes as implemented
+const API_URL = `${BASE_URL}/auth`; // Pointing to auth routes as implemented
 
 const userService = {
     getAllTechnicians: async () => {

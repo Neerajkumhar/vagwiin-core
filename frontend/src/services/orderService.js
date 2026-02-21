@@ -1,7 +1,8 @@
 import axios from 'axios';
+import { BASE_URL } from '../config';
 
-const API_URL = 'http://localhost:5002/api/orders';
-const ADMIN_API_URL = 'http://localhost:5002/api/admin/orders';
+const API_URL = `${BASE_URL}/orders`;
+const ADMIN_API_URL = `${BASE_URL}/admin/orders`;
 
 // Helper to get auth header
 const getAuthHeader = () => {
