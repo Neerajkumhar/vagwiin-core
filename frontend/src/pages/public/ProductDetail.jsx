@@ -174,7 +174,16 @@ const ProductDetail = () => {
                                     <ShoppingCart size={18} md:size={20} /> Add to Cart
                                 </button>
                                 <button
-                                    onClick={() => navigate('/checkout')}
+                                    onClick={async () => {
+                                        const res = await addToCart(product._id, 1);
+                                        if (res.success) {
+                                            navigate('/checkout');
+                                        } else {
+                                            if (res.message === 'Please login to add items to cart') {
+                                                navigate('/login');
+                                            }
+                                        }
+                                    }}
                                     className="flex-1 bg-blue-50 text-blue-700 font-black py-4 rounded-2xl flex items-center justify-center gap-2 hover:bg-blue-100 transition-all active:scale-95 text-sm md:text-base"
                                 >
                                     <Zap size={18} md:size={20} /> Buy Now
