@@ -28,7 +28,7 @@ router.post('/upload', (req, res, next) => {
 // GET ALL PRODUCTS (with filtering)
 router.get('/', async (req, res) => {
     try {
-        const { brand, ram, storage, grade, search, sort, minPrice, maxPrice } = req.query;
+        const { brand, ram, storage, grade, search, sort, minPrice, maxPrice, page = 1, limit = 12 } = req.query;
         let query = {};
 
         if (brand) query.brand = brand;
@@ -50,6 +50,14 @@ router.get('/', async (req, res) => {
             ];
         }
 
+        // Pagination setup
+        const p = Number(page);
+        const l = Number(limit);
+        const skip = (p - 1) * l;
+
+        const totalProducts = await Product.countDocuments(query);
+        const totalPages = Math.ceil(totalProducts / l);
+
         let apiQuery = Product.find(query);
 
         // Sorting
@@ -60,11 +68,17 @@ router.get('/', async (req, res) => {
             apiQuery = apiQuery.sort('-createdAt');
         }
 
-        const products = await apiQuery;
+        const products = await apiQuery.skip(skip).limit(l);
 
         res.status(200).json({
             status: 'success',
             results: products.length,
+            pagination: {
+                totalProducts,
+                totalPages,
+                currentPage: p,
+                limit: l
+            },
             data: { products }
         });
     } catch (err) {

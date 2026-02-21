@@ -25,26 +25,36 @@ const Shop = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [totalResults, setTotalResults] = useState(0);
+    const [sortBy, setSortBy] = useState('-createdAt');
     const [activeFilters, setActiveFilters] = useState({
         minPrice: 0,
         maxPrice: 200000
     });
 
     useEffect(() => {
+        setCurrentPage(1); // Reset to first page when filters/search changes
+    }, [activeFilters, searchTerm, sortBy]);
+
+    useEffect(() => {
         const timeoutId = setTimeout(() => {
             fetchProducts();
-        }, 300); // Debounce for search and price range
+        }, 300);
         return () => clearTimeout(timeoutId);
-    }, [activeFilters, searchTerm]);
+    }, [activeFilters, searchTerm, currentPage, sortBy]);
 
     const fetchProducts = async () => {
         try {
             setLoading(true);
-            const params = { ...activeFilters };
+            const params = { ...activeFilters, page: currentPage, limit: 12, sort: sortBy };
             if (searchTerm) params.search = searchTerm;
             const response = await productService.getAllProducts(params);
             if (response.status === 'success') {
                 setProducts(response.data.products);
+                setTotalPages(response.pagination?.totalPages || 1);
+                setTotalResults(response.pagination?.totalProducts || 0);
             }
         } catch (error) {
             console.error('Failed to fetch products:', error);
@@ -82,12 +92,12 @@ const Shop = () => {
             <Navbar />
 
             {/* Shop Header */}
-            <div className="bg-white border-b border-gray-100 py-12">
-                <div className="container mx-auto px-6">
-                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-8">
+            <div className="bg-white border-b border-gray-100 py-8 md:py-12">
+                <div className="container mx-auto px-4 sm:px-6">
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 md:gap-8">
                         <div>
-                            <h1 className="text-4xl font-black text-gray-900 tracking-tight leading-tight">Explore the Catalog</h1>
-                            <p className="text-gray-500 font-medium mt-2">Premium Refurbished Laptops at Unbeatable Prices.</p>
+                            <h1 className="text-2xl md:text-4xl font-black text-gray-900 tracking-tight leading-tight">Explore the Catalog</h1>
+                            <p className="text-gray-500 font-medium text-xs md:text-sm mt-1 md:mt-2">Premium Refurbished Laptops at Unbeatable Prices.</p>
                         </div>
                         <div className="flex items-center gap-4">
                             <div className="relative w-full md:w-80">
@@ -111,7 +121,7 @@ const Shop = () => {
                 </div>
             </div>
 
-            <main className="container mx-auto px-6 py-12 max-w-7xl flex-1">
+            <main className="container mx-auto px-4 sm:px-6 py-8 md:py-12 max-w-7xl flex-1">
                 <div className="flex flex-col lg:flex-row gap-12">
 
                     {/* PC Filters Sidebar */}
@@ -193,7 +203,7 @@ const Shop = () => {
                     <div className="flex-1 space-y-8">
                         {/* Toolbar */}
                         <div className="flex items-center justify-between">
-                            <p className="text-sm text-gray-400 font-medium italic">Showing <span className="text-gray-900 font-black not-italic">{products.length}</span> results found</p>
+                            <p className="text-sm text-gray-400 font-medium italic">Showing <span className="text-gray-900 font-black not-italic">{totalResults}</span> results found</p>
                             <div className="flex items-center gap-4">
                                 <div className="hidden sm:flex items-center bg-white p-1 rounded-xl border border-gray-100">
                                     <button
@@ -210,11 +220,15 @@ const Shop = () => {
                                     </button>
                                 </div>
                                 <div className="relative group">
-                                    <select className="appearance-none bg-white border border-gray-100 pl-6 pr-12 py-3 rounded-2xl text-xs font-black text-gray-900 outline-none focus:ring-4 focus:ring-blue-50 transition-all cursor-pointer">
-                                        <option>Sort: Popularity</option>
-                                        <option>Price: Low to High</option>
-                                        <option>Price: High to Low</option>
-                                        <option>Newest First</option>
+                                    <select
+                                        value={sortBy}
+                                        onChange={(e) => setSortBy(e.target.value)}
+                                        className="appearance-none bg-white border border-gray-100 pl-6 pr-12 py-3 rounded-2xl text-xs font-black text-gray-900 outline-none focus:ring-4 focus:ring-blue-50 transition-all cursor-pointer"
+                                    >
+                                        <option value="-createdAt">Newest First</option>
+                                        <option value="price">Price: Low to High</option>
+                                        <option value="-price">Price: High to Low</option>
+                                        <option value="rating">Popularity</option>
                                     </select>
                                     <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 group-hover:text-blue-600 transition-colors" size={14} />
                                 </div>
@@ -233,7 +247,7 @@ const Shop = () => {
                                 <p className="text-gray-500 font-bold">No products found matching your filters.</p>
                             </div>
                         ) : (
-                            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+                            <div className="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-8">
                                 {products.map((product) => (
                                     <ProductCard key={product._id} product={product} />
                                 ))}
@@ -241,13 +255,41 @@ const Shop = () => {
                         )}
 
                         {/* Pagination */}
-                        <div className="pt-12 flex items-center justify-center gap-4">
-                            <button className="w-12 h-12 bg-white border border-gray-100 rounded-2xl flex items-center justify-center text-gray-400 hover:border-blue-600 hover:text-blue-600 transition-all">1</button>
-                            <button className="w-12 h-12 bg-blue-600 text-white rounded-2xl flex items-center justify-center font-black shadow-lg shadow-blue-100">2</button>
-                            <button className="w-12 h-12 bg-white border border-gray-100 rounded-2xl flex items-center justify-center text-gray-400 hover:border-blue-600 hover:text-blue-600 transition-all">3</button>
-                            <span className="text-gray-300">...</span>
-                            <button className="w-12 h-12 bg-white border border-gray-100 rounded-2xl flex items-center justify-center text-gray-400 hover:border-blue-600 hover:text-blue-600 transition-all">12</button>
-                        </div>
+                        {totalPages > 1 && (
+                            <div className="pt-12 flex items-center justify-center gap-3">
+                                {[...Array(totalPages)].map((_, i) => {
+                                    const pageNum = i + 1;
+                                    // Simple logic to show only some pages if totalPages is large
+                                    if (
+                                        totalPages > 7 &&
+                                        pageNum !== 1 &&
+                                        pageNum !== totalPages &&
+                                        Math.abs(pageNum - currentPage) > 1
+                                    ) {
+                                        if (pageNum === 2 || pageNum === totalPages - 1) {
+                                            return <span key={pageNum} className="text-gray-300">...</span>;
+                                        }
+                                        return null;
+                                    }
+
+                                    return (
+                                        <button
+                                            key={pageNum}
+                                            onClick={() => {
+                                                setCurrentPage(pageNum);
+                                                window.scrollTo({ top: 0, behavior: 'smooth' });
+                                            }}
+                                            className={`w-12 h-12 rounded-2xl flex items-center justify-center font-black transition-all ${currentPage === pageNum
+                                                ? 'bg-blue-600 text-white shadow-lg shadow-blue-100'
+                                                : 'bg-white border border-gray-100 text-gray-400 hover:border-blue-600 hover:text-blue-600'
+                                                }`}
+                                        >
+                                            {pageNum}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        )}
                     </div>
                 </div>
             </main>
