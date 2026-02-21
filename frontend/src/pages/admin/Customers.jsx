@@ -27,6 +27,7 @@ const Customers = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [filterType, setFilterType] = useState('All');
     const [showModal, setShowModal] = useState(false);
+    const [sidebarOpen, setSidebarOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [currentCustomer, setCurrentCustomer] = useState(null);
     const [formData, setFormData] = useState({
@@ -187,27 +188,31 @@ const Customers = () => {
         return (
             <div className="h-screen bg-[#f8fbff] flex flex-col items-center justify-center">
                 <Loader2 className="animate-spin text-blue-600 mb-4" size={48} />
-                <p className="text-gray-500 font-bold italic tracking-widest">LOADING CUSTOMER DATA...</p>
+                <p className="text-gray-500 font-bold italic tracking-widest uppercase text-[10px] md:text-xs">LOADING CUSTOMER DATA...</p>
             </div>
         );
     }
 
     return (
         <div className="h-screen bg-[#f8fbff] flex flex-col overflow-hidden font-sans">
-            <Navbar />
-            <div className="flex flex-1 overflow-hidden">
-                <SidebarAdmin />
-                <main className="flex-1 overflow-y-auto p-6">
-                    <div className="flex justify-between items-center mb-10">
+            <div className="shrink-0">
+                <Navbar onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
+            </div>
+
+            <div className="flex flex-1 overflow-hidden relative">
+                <SidebarAdmin isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+
+                <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-10">
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 md:mb-12">
                         <div>
-                            <h1 className="text-2xl font-black text-gray-900 tracking-tight">Customer Management</h1>
-                            <p className="text-gray-400 font-medium">Manage and track your customers across platforms.</p>
+                            <h1 className="text-xl md:text-3xl font-black text-gray-900 tracking-tight">Customer Management</h1>
+                            <p className="text-xs md:text-sm text-gray-400 font-medium">Manage and track your customers across platforms.</p>
                         </div>
                         <button
                             onClick={() => { resetForm(); setShowModal(true); }}
-                            className="bg-blue-600 text-white px-6 py-3 rounded-2xl font-bold flex items-center gap-2 hover:bg-blue-700 transition-all shadow-lg shadow-blue-200"
+                            className="bg-blue-600 text-white px-6 py-3.5 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-blue-700 transition-all shadow-xl shadow-blue-100 active:scale-95"
                         >
-                            <Plus size={20} />
+                            <Plus size={18} />
                             Add Customer
                         </button>
                     </div>

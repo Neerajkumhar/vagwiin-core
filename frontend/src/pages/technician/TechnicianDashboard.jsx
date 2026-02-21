@@ -10,6 +10,7 @@ const TechnicianDashboard = () => {
     const [filterStatus, setFilterStatus] = useState('All');
     const [complaints, setComplaints] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [sidebarOpen, setSidebarOpen] = useState(false);
     const [user, setUser] = useState(null);
 
     useEffect(() => {
@@ -59,56 +60,71 @@ const TechnicianDashboard = () => {
         }
     };
 
-    return (
-        <div className="min-h-screen bg-[#f8fbff] flex flex-col font-sans">
-            <Navbar />
+    if (loading) {
+        return (
+            <div className="h-screen bg-[#f8fbff] flex flex-col items-center justify-center">
+                <Lucide.Loader2 className="animate-spin text-blue-600 mb-4" size={48} />
+                <p className="text-gray-400 font-bold tracking-widest uppercase text-[10px] md:text-sm italic">Synchronizing Tasks...</p>
+            </div>
+        );
+    }
 
-            <div className="flex flex-1 overflow-hidden">
-                <main className="flex-1 p-8 lg:p-12 overflow-y-auto">
+    return (
+        <div className="min-h-screen bg-[#f8fbff] flex flex-col font-sans selection:bg-blue-100 selection:text-blue-900">
+            <div className="shrink-0">
+                <Navbar onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
+            </div>
+
+            <div className="flex flex-1 overflow-hidden relative">
+                {/* For technicians we might not need the admin sidebar, but the navbar toggle is active.
+                    If we want a sidebar for tech too, we should include it.
+                    SidebarAdmin already has routes for complaints.
+                */}
+                <main className="flex-1 p-4 md:p-8 lg:p-12 overflow-y-auto">
                     {/* Header */}
-                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
+                    <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-8 md:mb-12">
                         <div>
-                            <h1 className="text-4xl font-black text-gray-900 tracking-tight">Assigned Tasks</h1>
-                            <div className="flex items-center gap-3 text-gray-400 font-medium mt-1 italic">
-                                <SafeIcon name="Calendar" size={16} />
-                                <span>Monday, 25 October 2025</span>
-                                <span className="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
+                            <h1 className="text-2xl md:text-4xl font-black text-gray-900 tracking-tight">Assigned Tasks</h1>
+                            <div className="flex items-center gap-2 md:gap-3 text-gray-400 font-medium mt-1 italic text-[10px] md:text-xs">
+                                <SafeIcon name="Calendar" size={14} />
+                                <span>{new Date().toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</span>
+                                <span className="w-1 h-1 md:w-1.5 md:h-1.5 rounded-full bg-blue-400"></span>
                                 <span>Technician Node #04</span>
                             </div>
                         </div>
-                        <div className="flex items-center gap-4">
+                        <div className="w-full lg:w-auto">
                             <div className="relative">
                                 <Lucide.Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                                <input type="text" placeholder="Search task ID..." className="pl-12 pr-6 py-4 bg-white border border-gray-100 rounded-2xl text-sm font-bold shadow-sm outline-none focus:ring-4 focus:ring-blue-50 transition-all w-full md:w-64" />
+                                <input type="text" placeholder="Search task ID..." className="pl-12 pr-6 py-3.5 bg-white border border-gray-100 rounded-2xl text-xs md:text-sm font-bold shadow-sm outline-none focus:ring-4 focus:ring-blue-50 transition-all w-full lg:w-64" />
                             </div>
                         </div>
                     </div>
 
                     {/* Stats Grid */}
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6 mb-8 md:mb-12">
                         {stats.map((stat, i) => (
-                            <div key={i} className="bg-white p-8 rounded-[40px] border border-gray-100 shadow-sm relative overflow-hidden group">
-                                <div className={`w-12 h-12 ${stat.color} rounded-2xl flex items-center justify-center mb-6`}>
-                                    <SafeIcon name={stat.icon} size={24} />
+                            <div key={i} className="bg-white p-5 md:p-8 rounded-3xl md:rounded-[40px] border border-gray-100 shadow-sm relative overflow-hidden group">
+                                <div className={`w-10 h-10 md:w-12 md:h-12 ${stat.color} rounded-xl md:rounded-2xl flex items-center justify-center mb-4 md:mb-6 group-hover:scale-110 transition-transform`}>
+                                    <SafeIcon name={stat.icon} size={20} />
                                 </div>
-                                <p className="text-sm font-black text-gray-400 uppercase tracking-widest leading-none">{stat.label}</p>
-                                <h3 className="text-3xl font-black text-gray-900 mt-2">{stat.value}</h3>
+                                <p className="text-[10px] md:text-sm font-black text-gray-400 uppercase tracking-widest leading-none">{stat.label}</p>
+                                <h3 className="text-xl md:text-3xl font-black text-gray-900 mt-2">{stat.value}</h3>
                             </div>
                         ))}
                     </div>
 
                     {/* Tasks List */}
-                    <div className="bg-white rounded-[48px] border border-gray-100 shadow-sm overflow-hidden mb-12">
-                        <div className="p-8 border-b border-gray-50 flex flex-col md:flex-row md:items-center justify-between gap-6">
-                            <h2 className="text-2xl font-black text-gray-900 tracking-tight flex items-center gap-3">
+                    <div className="bg-white rounded-[32px] md:rounded-[48px] border border-gray-100 shadow-sm overflow-hidden mb-12">
+                        <div className="p-6 md:p-8 border-b border-gray-50 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                            <h2 className="text-xl md:text-2xl font-black text-gray-900 tracking-tight flex items-center gap-3">
                                 <SafeIcon name="Clock" className="text-blue-600" /> Recent Complaints
                             </h2>
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-1.5 md:gap-2 overflow-x-auto pb-2 md:pb-0 custom-scrollbar">
                                 {['All', 'Pending', 'In Progress', 'Completed'].map((tab) => (
                                     <button
                                         key={tab}
                                         onClick={() => setFilterStatus(tab)}
-                                        className={`px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${filterStatus === tab ? 'bg-gray-900 text-white shadow-lg' : 'text-gray-400 hover:text-gray-900'
+                                        className={`px-4 md:px-5 py-2 md:py-2.5 rounded-xl text-[10px] md:text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap ${filterStatus === tab ? 'bg-gray-900 text-white shadow-lg' : 'text-gray-400 hover:text-gray-900'
                                             }`}
                                     >
                                         {tab}

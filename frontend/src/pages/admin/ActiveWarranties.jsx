@@ -21,6 +21,7 @@ const ActiveWarranties = () => {
     const [warranties, setWarranties] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
+    const [sidebarOpen, setSidebarOpen] = useState(false);
     const [selectedWarranty, setSelectedWarranty] = useState(null);
 
     useEffect(() => {
@@ -49,7 +50,7 @@ const ActiveWarranties = () => {
         return (
             <div className="h-screen bg-[#f8fbff] flex flex-col items-center justify-center">
                 <Loader2 className="animate-spin text-blue-600 mb-4" size={48} />
-                <p className="text-gray-500 font-bold">Loading Warranties...</p>
+                <p className="text-gray-500 font-bold tracking-widest uppercase text-[10px] md:text-sm">Loading Warranties...</p>
             </div>
         );
     }
@@ -57,25 +58,25 @@ const ActiveWarranties = () => {
     return (
         <div className="h-screen bg-[#f8fbff] flex flex-col overflow-hidden font-sans">
             <div className="shrink-0">
-                <Navbar />
+                <Navbar onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
             </div>
 
-            <div className="flex flex-1 overflow-hidden">
-                <SidebarAdmin />
+            <div className="flex flex-1 overflow-hidden relative">
+                <SidebarAdmin isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-                <main className="flex-1 overflow-y-auto p-6">
-                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
+                <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-10">
+                    <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-8 md:mb-10">
                         <div>
-                            <h1 className="text-2xl font-black text-gray-900">Active Warranties</h1>
-                            <p className="text-gray-400 font-medium">Manage and track product warranties</p>
+                            <h1 className="text-xl md:text-3xl font-black text-gray-900 tracking-tight">Active Warranties</h1>
+                            <p className="text-xs md:text-sm text-gray-400 font-medium">Manage and track product warranties</p>
                         </div>
 
-                        <div className="relative w-full md:w-96">
+                        <div className="relative w-full lg:max-w-md">
                             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                             <input
                                 type="text"
                                 placeholder="Search by Serial, Customer or Product..."
-                                className="w-full pl-12 pr-4 py-3 bg-white border border-gray-100 rounded-2xl text-sm font-bold outline-none focus:ring-4 focus:ring-blue-50 transition-all shadow-sm"
+                                className="w-full pl-12 pr-4 py-3.5 bg-white border border-gray-100 rounded-2xl text-xs md:text-sm font-bold outline-none focus:ring-4 focus:ring-blue-50 transition-all shadow-sm"
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                             />

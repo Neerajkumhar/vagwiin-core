@@ -5,7 +5,7 @@ import TopBar from './TopBar';
 import authService from '../services/authService';
 import { useCart } from '../context/CartContext';
 
-const Navbar = () => {
+const Navbar = ({ onToggleSidebar }) => {
     const { cartCount, refreshCart } = useCart();
     const location = useLocation();
     const navigate = useNavigate();
@@ -63,10 +63,20 @@ const Navbar = () => {
     return (
         <header className="sticky top-0 z-50">
             {!isAdminOrTechPage && <TopBar />}
-            <nav className="flex items-center justify-between px-6 py-4 bg-white/90 backdrop-blur-md border-b border-gray-100">
-                <Link to="/" className="flex items-center shrink-0">
-                    <img src="/img/logo.png" alt="Vagwiin Logo" className="h-8 md:h-10 w-auto object-contain" />
-                </Link>
+            <nav className="flex items-center justify-between px-4 md:px-6 py-4 bg-white/90 backdrop-blur-md border-b border-gray-100">
+                <div className="flex items-center gap-3">
+                    {isAdminOrTechPage && (
+                        <button
+                            onClick={onToggleSidebar}
+                            className="lg:hidden p-2 hover:bg-gray-100 rounded-xl transition-colors text-gray-600"
+                        >
+                            <Menu size={22} />
+                        </button>
+                    )}
+                    <Link to="/" className="flex items-center shrink-0">
+                        <img src="/img/logo.png" alt="Vagwiin Logo" className="h-7 md:h-10 w-auto object-contain" />
+                    </Link>
+                </div>
 
                 <div className="hidden md:flex items-center gap-8 text-gray-600 font-medium">
                     <Link to="/" className={`transition-colors ${isActive('/') ? 'text-blue-600' : 'hover:text-blue-600'}`}>Home</Link>
@@ -79,7 +89,7 @@ const Navbar = () => {
                     )}
                 </div>
 
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2 md:gap-4">
                     {user && (
                         <div className="relative">
                             <button
@@ -146,10 +156,10 @@ const Navbar = () => {
                         <span className="absolute -top-1 -right-1 w-5 h-5 bg-blue-600 text-white text-[10px] font-black rounded-full flex items-center justify-center border-2 border-white">{cartCount}</span>
                     </Link>
 
-                    <div className="h-6 w-[1px] bg-gray-200 mx-2 hidden sm:block"></div>
+                    <div className="h-6 w-[1px] bg-gray-200 mx-1 md:mx-2 hidden sm:block"></div>
 
                     {user ? (
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-1 md:gap-3">
                             {user.role === 'admin' && (
                                 <Link
                                     to="/admin"
@@ -168,17 +178,19 @@ const Navbar = () => {
                                     Technician Panel
                                 </Link>
                             )}
-                            <Link to="/profile" className="flex items-center gap-2 p-1 pr-3 hover:bg-gray-100 rounded-full transition-all cursor-pointer border border-transparent hover:border-gray-200">
+                            <Link to="/profile" className="flex items-center gap-2 p-1 pr-2 md:pr-3 hover:bg-gray-100 rounded-full transition-all cursor-pointer border border-transparent hover:border-gray-200">
                                 <img
                                     src={`https://ui-avatars.com/api/?name=${user?.fullName || 'User'}&background=0D8ABC&color=fff`}
                                     alt="Profile"
-                                    className="w-8 h-8 rounded-full"
+                                    className="w-7 h-7 md:w-8 md:h-8 rounded-full"
                                 />
                                 <span className="hidden lg:block text-sm font-bold text-gray-700">{(user?.fullName || 'User').split(' ')[0]}</span>
                             </Link>
-                            <button onClick={toggleMenu} className="md:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors">
-                                <Menu size={24} className="text-gray-600" />
-                            </button>
+                            {!isAdminOrTechPage && (
+                                <button onClick={toggleMenu} className="md:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                                    <Menu size={24} className="text-gray-600" />
+                                </button>
+                            )}
                         </div>
                     ) : (
                         <div className="flex items-center gap-2 sm:gap-3">

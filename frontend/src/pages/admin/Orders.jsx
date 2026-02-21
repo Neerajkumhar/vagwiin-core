@@ -29,6 +29,7 @@ const Orders = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [sidebarOpen, setSidebarOpen] = useState(false);
     const [stats, setStats] = useState({
         total: 0,
         processing: 0,
@@ -69,7 +70,9 @@ const Orders = () => {
             await orderService.updateOrderStatus(id, newStatus);
             fetchOrders(); // Refresh list
         } catch (error) {
-            alert('Failed to update status');
+            console.error('Error updating status:', error);
+            const message = error.response?.data?.message || 'Failed to update status';
+            alert(message);
         }
     };
 
@@ -96,46 +99,46 @@ const Orders = () => {
     ];
 
     return (
-        <div className="h-screen bg-[#f8fbff] flex flex-col overflow-hidden">
+        <div className="h-screen bg-[#f8fbff] flex flex-col overflow-hidden font-sans">
             <div className="shrink-0">
-                <Navbar />
+                <Navbar onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
             </div>
 
-            <div className="flex flex-1 overflow-hidden">
-                <SidebarAdmin />
+            <div className="flex flex-1 overflow-hidden relative">
+                <SidebarAdmin isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-                <main className="flex-1 overflow-y-auto p-6">
+                <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-10">
                     {/* Header Section */}
-                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 md:mb-12">
                         <div>
-                            <h1 className="text-2xl font-black text-gray-900 mb-2">Order Management</h1>
-                            <p className="text-gray-500 font-medium">Manage and track all customer orders from the database.</p>
+                            <h1 className="text-xl md:text-3xl font-black text-gray-900 mb-1 tracking-tight">Order Management</h1>
+                            <p className="text-xs md:text-sm text-gray-500 font-medium">Manage and track all customer orders from the database.</p>
                         </div>
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2 md:gap-3">
                             <button
                                 onClick={fetchOrders}
-                                className="p-2.5 bg-white border border-gray-200 rounded-xl text-gray-600 hover:bg-gray-50 transition-all shadow-sm"
+                                className="p-2 md:p-3 bg-white border border-gray-100 rounded-xl md:rounded-2xl text-gray-600 hover:bg-gray-50 transition-all shadow-sm active:scale-95"
                                 title="Refresh Data"
                             >
-                                <RefreshCw size={20} className={loading ? 'animate-spin' : ''} />
+                                <RefreshCw size={18} className={loading ? 'animate-spin' : ''} />
                             </button>
-                            <button className="flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-gray-600 font-bold hover:bg-gray-50 transition-all text-sm">
-                                <Download size={18} /> Export CSV
+                            <button className="flex items-center gap-2 px-4 py-3 bg-white border border-gray-100 rounded-xl md:rounded-2xl text-gray-600 font-black text-[10px] md:text-xs uppercase tracking-widest hover:bg-gray-50 transition-all active:scale-95">
+                                <Download size={16} /> Export
                             </button>
                         </div>
                     </div>
 
                     {/* Stats Grid */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-6 md:mb-8">
                         {orderStatsItems.map((stat, i) => (
-                            <div key={i} className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
-                                <div className="flex items-center gap-4">
-                                    <div className={`p-4 ${stat.bg} ${stat.color} rounded-2xl`}>
-                                        <stat.icon size={24} />
+                            <div key={i} className="bg-white p-4 md:p-5 rounded-2xl md:rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300">
+                                <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-4">
+                                    <div className={`w-10 h-10 md:w-14 md:h-14 ${stat.bg} ${stat.color} rounded-xl md:rounded-2xl flex items-center justify-center shrink-0`}>
+                                        <stat.icon size={20} className="md:w-6 md:h-6" />
                                     </div>
                                     <div>
-                                        <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">{stat.label}</p>
-                                        <p className="text-xl font-black text-gray-900">{stat.value}</p>
+                                        <p className="text-[8px] md:text-[10px] font-black text-gray-400 uppercase tracking-widest mb-0.5 md:mb-1">{stat.label}</p>
+                                        <p className="text-sm md:text-xl font-black text-gray-900">{stat.value}</p>
                                     </div>
                                 </div>
                             </div>
@@ -143,23 +146,23 @@ const Orders = () => {
                     </div>
 
                     {/* Filters & Search */}
-                    <div className="bg-white p-3 rounded-2xl border border-gray-100 shadow-sm mb-4 flex flex-col md:flex-row gap-4 items-center justify-between">
-                        <div className="relative w-full md:w-96">
+                    <div className="bg-white p-2 md:p-3 rounded-2xl md:rounded-3xl border border-gray-100 shadow-sm mb-6 flex flex-col lg:flex-row gap-2 md:gap-3 items-center justify-between">
+                        <div className="relative w-full lg:max-w-md">
                             <input
                                 type="text"
                                 placeholder="Search by Order ID or Client Name..."
-                                className="w-full pl-11 pr-4 py-3 bg-gray-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-blue-100 outline-none"
+                                className="w-full pl-10 pr-4 py-3 bg-gray-50 border-none rounded-xl md:rounded-2xl text-xs md:text-sm font-bold text-gray-700 focus:ring-4 focus:ring-blue-50 outline-none transition-all"
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                             />
-                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
                         </div>
-                        <div className="flex items-center gap-3 w-full md:w-auto">
-                            <button className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-3 bg-gray-50 text-gray-600 rounded-xl text-sm font-bold hover:bg-gray-100 transition-all">
-                                <Calendar size={18} /> All Time
+                        <div className="flex items-center gap-2 w-full lg:w-auto">
+                            <button className="flex-1 lg:flex-none flex items-center justify-center gap-2 px-4 py-3 bg-gray-50 text-gray-600 rounded-xl md:rounded-2xl text-[10px] md:text-xs font-black uppercase tracking-widest hover:bg-gray-100 transition-all">
+                                <Calendar size={14} /> Date Range
                             </button>
-                            <button className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-3 bg-gray-50 text-gray-600 rounded-xl text-sm font-bold hover:bg-gray-100 transition-all">
-                                <Filter size={18} /> Filters
+                            <button className="flex-1 lg:flex-none flex items-center justify-center gap-2 px-4 py-3 bg-gray-50 text-gray-600 rounded-xl md:rounded-2xl text-[10px] md:text-xs font-black uppercase tracking-widest hover:bg-gray-100 transition-all">
+                                <Filter size={14} /> Filter
                             </button>
                         </div>
                     </div>

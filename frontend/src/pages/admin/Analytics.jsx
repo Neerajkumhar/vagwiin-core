@@ -16,6 +16,7 @@ import warrantyService from '../../services/warrantyService';
 
 const Analytics = () => {
     const [loading, setLoading] = useState(true);
+    const [sidebarOpen, setSidebarOpen] = useState(false);
     const [data, setData] = useState({
         revenue: [],
         categories: [],
@@ -171,7 +172,7 @@ const Analytics = () => {
         return (
             <div className="h-screen bg-[#f8fbff] flex flex-col items-center justify-center">
                 <Loader2 className="animate-spin text-blue-600 mb-4" size={48} />
-                <p className="text-gray-500 font-bold italic tracking-widest uppercase">Generating Intelligence Report...</p>
+                <p className="text-gray-500 font-bold italic tracking-widest uppercase text-[10px] md:text-xs">Generating Intelligence Report...</p>
             </div>
         );
     }
@@ -179,29 +180,29 @@ const Analytics = () => {
     return (
         <div className="h-screen bg-[#fafbfc] flex flex-col overflow-hidden font-sans selection:bg-blue-100 selection:text-blue-900">
             <div className="shrink-0">
-                <Navbar />
+                <Navbar onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
             </div>
 
-            <div className="flex flex-1 overflow-hidden">
-                <SidebarAdmin />
+            <div className="flex flex-1 overflow-hidden relative">
+                <SidebarAdmin isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-                <main className="flex-1 overflow-y-auto p-8 lg:p-12">
+                <main className="flex-1 overflow-y-auto p-4 md:p-8 lg:p-12">
                     {/* Header Section */}
-                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
+                    <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-8 md:mb-12">
                         <div>
-                            <div className="flex items-center gap-3 mb-2">
+                            <div className="flex items-center gap-2 md:gap-3 mb-1 md:mb-2">
                                 <div className="p-2 bg-blue-600 rounded-lg">
-                                    <TrendingUp size={20} className="text-white" />
+                                    <TrendingUp size={18} className="text-white md:w-5 md:h-5" />
                                 </div>
-                                <h1 className="text-3xl font-black text-slate-900 tracking-tight">Advanced Analytics</h1>
+                                <h1 className="text-xl md:text-3xl font-black text-slate-900 tracking-tight">Advanced Analytics</h1>
                             </div>
-                            <p className="text-slate-500 font-medium">Strategic insights and performance metrics for Vagwiin Core.</p>
+                            <p className="text-xs md:text-sm text-slate-500 font-medium tracking-wide">Strategic insights and performance metrics for Vagwiin Core.</p>
                         </div>
 
-                        <div className="flex items-center gap-3">
-                            <button className="flex items-center gap-2 px-5 py-3 bg-white border border-slate-200 text-slate-700 rounded-2xl font-bold text-sm hover:bg-slate-50 transition-all shadow-sm">
-                                <Calendar size={18} />
-                                <span>Last 6 Months</span>
+                        <div className="flex items-center gap-2 md:gap-3">
+                            <button className="flex-1 lg:flex-none flex items-center justify-center gap-2 px-4 py-3 bg-white border border-slate-200 text-slate-700 rounded-xl md:rounded-2xl font-black text-[10px] md:text-xs uppercase tracking-widest hover:bg-slate-50 transition-all shadow-sm">
+                                <Calendar size={14} />
+                                <span>Range</span>
                             </button>
                             <button
                                 onClick={() => {
@@ -347,10 +348,10 @@ const Analytics = () => {
                                     reportWindow.document.write(reportHtml);
                                     reportWindow.document.close();
                                 }}
-                                className="flex items-center gap-2 px-5 py-3 bg-slate-900 text-white rounded-2xl font-bold text-sm hover:bg-slate-800 transition-all shadow-lg hover:shadow-xl active:scale-95"
+                                className="flex-1 lg:flex-none flex items-center justify-center gap-2 px-6 py-3 bg-slate-900 text-white rounded-xl md:rounded-2xl font-black text-[10px] md:text-xs uppercase tracking-widest hover:bg-slate-800 transition-all shadow-lg hover:shadow-xl active:scale-95"
                             >
-                                <Download size={18} />
-                                <span>Export Report</span>
+                                <Download size={16} />
+                                <span>Report</span>
                             </button>
                         </div>
                     </div>

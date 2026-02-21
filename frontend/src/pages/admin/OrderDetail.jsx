@@ -23,6 +23,7 @@ const OrderDetail = () => {
     const { id } = useParams();
     const [order, setOrder] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [sidebarOpen, setSidebarOpen] = useState(false);
     const [itemSerials, setItemSerials] = useState({});
     const [updating, setUpdating] = useState(false);
 
@@ -106,8 +107,9 @@ const OrderDetail = () => {
 
     if (loading) {
         return (
-            <div className="h-screen bg-[#f8fbff] flex items-center justify-center">
-                <Loader2 className="animate-spin text-blue-600" size={48} />
+            <div className="h-screen bg-[#f8fbff] flex flex-col items-center justify-center">
+                <Loader2 className="animate-spin text-blue-600 mb-4" size={48} />
+                <p className="text-gray-400 font-bold tracking-widest uppercase text-[10px] md:text-xs italic">Retrieving Order Data...</p>
             </div>
         );
     }
@@ -139,35 +141,35 @@ const OrderDetail = () => {
             `}} />
 
             <div className="shrink-0 no-print">
-                <Navbar />
+                <Navbar onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
             </div>
 
-            <div className="flex flex-1 overflow-hidden">
+            <div className="flex flex-1 overflow-hidden relative">
                 <div className="no-print">
-                    <SidebarAdmin />
+                    <SidebarAdmin isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
                 </div>
 
-                <main className="flex-1 overflow-y-auto p-6 no-print">
+                <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-10 no-print">
                     {/* Header with Navigation */}
-                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
+                    <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-8 md:mb-10">
                         <div>
-                            <Link to="/orders" className="flex items-center gap-2 text-blue-600 font-bold text-sm mb-4 hover:underline">
+                            <Link to="/orders" className="flex items-center gap-2 text-blue-600 font-black text-[10px] md:text-sm mb-2 md:mb-4 hover:underline uppercase tracking-widest">
                                 <ChevronLeft size={16} /> Back to Orders
                             </Link>
-                            <div className="flex items-center gap-4">
-                                <h1 className="text-2xl font-black text-gray-900">Order #{order._id.slice(-8).toUpperCase()}</h1>
-                                <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border ${getStatusStyle(order.status)}`}>
+                            <div className="flex flex-wrap items-center gap-3 md:gap-4">
+                                <h1 className="text-xl md:text-3xl font-black text-gray-900 tracking-tight">Order #{order._id.slice(-8).toUpperCase()}</h1>
+                                <span className={`px-3 py-1 rounded-full text-[8px] md:text-[10px] font-black uppercase tracking-wider border ${getStatusStyle(order.status)}`}>
                                     {order.status}
                                 </span>
                             </div>
-                            <p className="text-gray-400 font-medium mt-1 flex items-center gap-2">
+                            <p className="text-[10px] md:text-xs text-gray-400 font-bold mt-1.5 flex items-center gap-2 uppercase tracking-wide">
                                 <Calendar size={14} /> Placed on {formatDate(order.createdAt)}
                             </p>
                         </div>
                         <div className="flex items-center gap-3">
                             <button
                                 onClick={() => window.print()}
-                                className="flex items-center gap-2 px-4 py-2 bg-slate-900 text-white rounded-xl font-bold hover:bg-slate-800 transition-all shadow-lg active:scale-95 text-xs font-sans"
+                                className="flex-1 lg:flex-none flex items-center justify-center gap-2 px-6 py-3.5 bg-slate-900 text-white rounded-xl md:rounded-2xl font-black uppercase text-[10px] md:text-xs tracking-widest hover:bg-slate-800 transition-all shadow-xl active:scale-95"
                             >
                                 <Printer size={18} /> Print Invoice
                             </button>

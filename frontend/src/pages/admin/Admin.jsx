@@ -37,6 +37,7 @@ const Admin = () => {
     const [warranties, setWarranties] = useState([]);
     const [customers, setCustomers] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [sidebarOpen, setSidebarOpen] = useState(false);
     const [stats, setStats] = useState({
         totalProducts: 0,
         ordersToday: 0,
@@ -139,7 +140,7 @@ const Admin = () => {
         return (
             <div className="h-screen bg-[#f8fbff] flex flex-col items-center justify-center">
                 <Loader2 className="animate-spin text-blue-600 mb-4" size={48} />
-                <p className="text-gray-500 font-bold italic tracking-widest">SYNCHRONIZING CORE DATA...</p>
+                <p className="text-gray-500 font-bold italic tracking-widest text-[10px] md:text-sm">SYNCHRONIZING CORE DATA...</p>
             </div>
         );
     }
@@ -147,16 +148,16 @@ const Admin = () => {
     return (
         <div className="h-screen bg-[#f8fbff] flex flex-col overflow-hidden font-sans">
             <div className="shrink-0">
-                <Navbar />
+                <Navbar onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
             </div>
 
-            <div className="flex flex-1 overflow-hidden">
-                <SidebarAdmin />
+            <div className="flex flex-1 overflow-hidden relative">
+                <SidebarAdmin isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-                <main className="flex-1 overflow-y-auto p-6">
-                    <div className="mb-10">
-                        <h1 className="text-2xl font-black text-gray-900 tracking-tight">Enterprise Overview</h1>
-                        <p className="text-gray-400 font-medium">Real-time metrics from Vagwiin Core database.</p>
+                <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-10">
+                    <div className="mb-8 md:mb-12">
+                        <h1 className="text-xl md:text-3xl font-black text-gray-900 tracking-tight">Enterprise Overview</h1>
+                        <p className="text-xs md:text-sm text-gray-400 font-medium tracking-wide mt-1">Real-time metrics from Vagwiin Core database.</p>
                     </div>
 
                     {/* Stats Grid */}
