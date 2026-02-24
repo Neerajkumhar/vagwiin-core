@@ -12,7 +12,8 @@ import {
     Printer,
     Clock,
     CheckCircle2,
-    Loader2
+    Loader2,
+    Trash2
 } from 'lucide-react';
 import Navbar from '../../components/Navbar';
 import SidebarAdmin from '../../components/SidebarAdmin';
@@ -97,6 +98,22 @@ const OrderDetail = () => {
         }
     };
 
+    const handleDeleteOrder = async () => {
+        if (window.confirm('Are you sure you want to delete this order? This action cannot be undone.')) {
+            try {
+                setUpdating(true);
+                await orderService.deleteOrder(id);
+                navigate('/orders');
+            } catch (error) {
+                console.error('Error deleting order:', error);
+                const message = error.response?.data?.message || 'Failed to delete order';
+                alert(message);
+            } finally {
+                setUpdating(false);
+            }
+        }
+    };
+
     const getStatusStyle = (status) => {
         switch (status) {
             case 'Shipped': return 'bg-green-100 text-green-700 border-green-200';
@@ -168,7 +185,14 @@ const OrderDetail = () => {
                                 <Calendar size={14} /> Placed on {formatDate(order.createdAt)}
                             </p>
                         </div>
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2 md:gap-3">
+                            <button
+                                onClick={handleDeleteOrder}
+                                disabled={updating}
+                                className="flex-1 lg:flex-none flex items-center justify-center gap-2 px-6 py-3.5 bg-white border border-red-100 text-red-600 rounded-xl md:rounded-2xl font-black uppercase text-[10px] md:text-xs tracking-widest hover:bg-red-50 transition-all active:scale-95"
+                            >
+                                <Trash2 size={18} /> Delete Record
+                            </button>
                             <button
                                 onClick={() => window.print()}
                                 className="flex-1 lg:flex-none flex items-center justify-center gap-2 px-6 py-3.5 bg-slate-900 text-white rounded-xl md:rounded-2xl font-black uppercase text-[10px] md:text-xs tracking-widest hover:bg-slate-800 transition-all shadow-xl active:scale-95"
