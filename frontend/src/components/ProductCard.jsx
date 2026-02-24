@@ -1,21 +1,18 @@
 import React from 'react';
 import { Star, ShoppingCart } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import { useSettings } from '../context/SettingsContext';
 
 const ProductCard = ({ product }) => {
     const { addToCart } = useCart();
+    const navigate = useNavigate();
+    const { currencySymbol, formatPrice } = useSettings();
 
     const handleAddToCart = async (e) => {
         e.preventDefault();
         e.stopPropagation();
-        const result = await addToCart(product._id);
-        if (result.success) {
-            // Optional: Show a subtle success message if no toast is available
-            // alert('Added to cart!');
-        } else {
-            alert(result.message);
-        }
+        await addToCart(product._id);
     };
 
     return (
@@ -58,7 +55,7 @@ const ProductCard = ({ product }) => {
                 <div className="flex items-center justify-between mt-auto">
                     <div className="flex flex-col">
                         <span className="text-base md:text-2xl font-black text-gray-900">
-                            ₹{product.price.toLocaleString()}
+                            {formatPrice(product.price)}
                         </span>
                         <div className="flex items-center gap-1">
                             <Star size={12} className="fill-yellow-400 text-yellow-400" />

@@ -17,10 +17,12 @@ import {
 } from 'lucide-react';
 import Navbar from '../../components/Navbar';
 import SidebarAdmin from '../../components/SidebarAdmin';
+import { useSettings } from '../../context/SettingsContext';
 import customerService from '../../services/customerService';
 import productService from '../../services/productService';
 
 const Customers = () => {
+    const { currencySymbol } = useSettings();
     const [customers, setCustomers] = useState([]);
     const [inventory, setInventory] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -299,7 +301,7 @@ const Customers = () => {
                                                     <p className="text-xs font-medium text-gray-600">{customer.phone || 'No Phone'}</p>
                                                 </td>
                                                 <td className="p-6">
-                                                    <span className="text-sm font-black text-gray-900">₹{customer.totalSales?.toLocaleString() || 0}</span>
+                                                    <span className="text-sm font-black text-gray-900">{currencySymbol}{customer.totalSales?.toLocaleString() || 0}</span>
                                                 </td>
                                                 <td className="p-6 text-right">
                                                     <div className="flex justify-end gap-2">
@@ -341,7 +343,7 @@ const Customers = () => {
                         <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm flex items-center justify-between">
                             <div>
                                 <p className="text-[10px] text-gray-400 font-black uppercase tracking-widest mb-1">Total Platform Sales</p>
-                                <h4 className="text-2xl font-black text-gray-900">₹{stats.totalSales.toLocaleString()}</h4>
+                                <h4 className="text-2xl font-black text-gray-900">{currencySymbol}{stats.totalSales.toLocaleString()}</h4>
                             </div>
                             <div className="p-4 bg-green-50 text-green-600 rounded-2xl">
                                 <TrendingUp size={24} />
@@ -429,7 +431,7 @@ const Customers = () => {
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5">Sales (₹)</label>
+                                    <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5">Sales ({currencySymbol})</label>
                                     <input
                                         type="number"
                                         name="totalSales"

@@ -29,10 +29,12 @@ import {
 import Navbar from '../../components/Navbar';
 import SidebarAdmin from '../../components/SidebarAdmin';
 import productService from '../../services/productService';
+import { useSettings } from '../../context/SettingsContext';
 import product1 from '../../assets/images/product_1.png';
 import product2 from '../../assets/images/product_2.png';
 
 const Inventory = () => {
+    const { settings, currencySymbol } = useSettings();
     const [inventory, setInventory] = useState([]);
     const [loading, setLoading] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -188,7 +190,7 @@ const Inventory = () => {
         { label: 'Total Items', value: inventory.reduce((acc, p) => acc + (p.stock || 0), 0).toString(), icon: Box, color: 'text-blue-600', bg: 'bg-blue-50' },
         { label: 'Low Stock', value: inventory.filter(p => p.status === 'Low Stock').length.toString(), icon: AlertTriangle, color: 'text-orange-600', bg: 'bg-orange-50' },
         { label: 'Out of Stock', value: inventory.filter(p => p.status === 'Out of Stock').length.toString(), icon: XCircle, color: 'text-red-600', bg: 'bg-red-50' },
-        { label: 'Total Value', value: `₹${(inventory.reduce((acc, p) => acc + (p.price * p.stock), 0) / 100000).toFixed(1)}L`, icon: Database, color: 'text-purple-600', bg: 'bg-purple-50' },
+        { label: 'Total Value', value: `${currencySymbol}${(inventory.reduce((acc, p) => acc + (p.price * p.stock), 0) / 100000).toFixed(1)}L`, icon: Database, color: 'text-purple-600', bg: 'bg-purple-50' },
     ];
 
     const getStatusStyle = (status) => {
@@ -331,7 +333,7 @@ const Inventory = () => {
                                                 </span>
                                             </td>
                                             <td className="px-4 py-4 text-right font-black text-gray-900 whitespace-nowrap">
-                                                ₹{item.price.toLocaleString()}
+                                                {currencySymbol}{item.price.toLocaleString()}
                                             </td>
                                             <td className="px-4 py-4 text-center">
                                                 <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider border ${getStatusStyle(item.status)}`}>
@@ -589,7 +591,7 @@ const Inventory = () => {
                                     </div>
                                 </div>
                                 <div className="flex flex-col gap-2">
-                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Price (INR)</label>
+                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Price ({settings.currency})</label>
                                     <input name="price" value={formData.price} onChange={handleInputChange} required type="number" placeholder="38500" className="px-5 py-3.5 bg-gray-50 border-none rounded-2xl text-sm font-black text-gray-900 outline-none focus:ring-4 focus:ring-blue-50 transition-all" />
                                 </div>
                                 <div className="flex flex-col gap-2">

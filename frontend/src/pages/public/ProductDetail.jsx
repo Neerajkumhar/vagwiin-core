@@ -21,9 +21,12 @@ import Navbar from '../../components/Navbar';
 import ProductCard from '../../components/ProductCard';
 import productService from '../../services/productService';
 import { useCart } from '../../context/CartContext';
+import Footer from '../../components/Footer';
+import { useSettings } from '../../context/SettingsContext';
 import product1 from '../../assets/images/product_1.png';
 
 const ProductDetail = () => {
+    const { currencySymbol, formatPrice } = useSettings();
     const { addToCart } = useCart();
     const { id } = useParams();
     const navigate = useNavigate();
@@ -133,7 +136,7 @@ const ProductDetail = () => {
                             </div>
                             <h1 className="text-2xl md:text-4xl font-black text-gray-900 mb-2 leading-tight">{product.name}</h1>
                             <div className="flex items-baseline gap-4 mt-2">
-                                <span className="text-3xl md:text-4xl font-black text-blue-600">₹{product.price.toLocaleString()}</span>
+                                <span className="text-3xl md:text-4xl font-black text-blue-600">{formatPrice(product.price)}</span>
                                 <span className="text-gray-400 text-[10px] md:text-sm font-medium">{product.reviewsCount || 0} Reviews</span>
                             </div>
                         </div>
@@ -163,10 +166,6 @@ const ProductDetail = () => {
                                         const res = await addToCart(product._id, 1);
                                         if (res.success) {
                                             navigate('/cart');
-                                        } else {
-                                            if (res.message === 'Please login to add items to cart') {
-                                                navigate('/login');
-                                            }
                                         }
                                     }}
                                     className="flex-1 bg-blue-600 text-white font-black py-4 rounded-2xl flex items-center justify-center gap-2 hover:bg-blue-700 transition-all active:scale-95 shadow-lg shadow-blue-200 text-sm md:text-base"
@@ -178,10 +177,6 @@ const ProductDetail = () => {
                                         const res = await addToCart(product._id, 1);
                                         if (res.success) {
                                             navigate('/checkout');
-                                        } else {
-                                            if (res.message === 'Please login to add items to cart') {
-                                                navigate('/login');
-                                            }
                                         }
                                     }}
                                     className="flex-1 bg-blue-50 text-blue-700 font-black py-4 rounded-2xl flex items-center justify-center gap-2 hover:bg-blue-100 transition-all active:scale-95 text-sm md:text-base"
@@ -371,13 +366,8 @@ const ProductDetail = () => {
                     </div>
                 </section>
             </main>
-
-            <footer className="bg-white border-t border-gray-50 py-12 mt-20">
-                <div className="container mx-auto px-6 text-center text-gray-300 text-[10px] md:text-xs font-bold uppercase tracking-[0.2em]">
-                    © 2026 VAGWIIN-CORE. PREMIUM REFURBISHED TECHNOLOGY.
-                </div>
-            </footer>
-        </div>
+            <Footer />
+        </div >
     );
 };
 

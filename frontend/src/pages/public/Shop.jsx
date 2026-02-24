@@ -18,8 +18,11 @@ import {
 import Navbar from '../../components/Navbar';
 import ProductCard from '../../components/ProductCard';
 import productService from '../../services/productService';
+import Footer from '../../components/Footer';
+import { useSettings } from '../../context/SettingsContext';
 
 const Shop = () => {
+    const { currencySymbol, formatPrice } = useSettings();
     const [viewMode, setViewMode] = useState('grid');
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
@@ -152,7 +155,7 @@ const Shop = () => {
                                 <div className="space-y-4">
                                     <div className="flex justify-between items-center">
                                         <h4 className="text-sm font-black text-gray-900">Price Range</h4>
-                                        <span className="text-xs font-black text-blue-600">₹{Number(activeFilters.minPrice || 0).toLocaleString()} - ₹{Number(activeFilters.maxPrice || 200000).toLocaleString()}</span>
+                                        <span className="text-xs font-black text-blue-600">{formatPrice(activeFilters.minPrice || 0)} - {formatPrice(activeFilters.maxPrice || 200000)}</span>
                                     </div>
                                     <div className="px-2 space-y-4">
                                         <div className="flex flex-col gap-1">
@@ -180,8 +183,8 @@ const Shop = () => {
                                             />
                                         </div>
                                         <div className="flex justify-between mt-2 text-[10px] font-black text-gray-400">
-                                            <span>₹0</span>
-                                            <span>₹2,00,000</span>
+                                            <span>{formatPrice(0)}</span>
+                                            <span>{formatPrice(200000)}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -327,7 +330,7 @@ const Shop = () => {
                             <div className="space-y-4">
                                 <div className="flex justify-between items-center">
                                     <h4 className="text-sm font-black text-gray-900">Price Range</h4>
-                                    <span className="text-xs font-black text-blue-600">₹{Number(activeFilters.minPrice || 0).toLocaleString()} - ₹{Number(activeFilters.maxPrice || 200000).toLocaleString()}</span>
+                                    <span className="text-xs font-black text-blue-600">{formatPrice(activeFilters.minPrice || 0)} - {formatPrice(activeFilters.maxPrice || 200000)}</span>
                                 </div>
                                 <div className="px-2 space-y-4">
                                     <div className="flex flex-col gap-1">
@@ -355,8 +358,8 @@ const Shop = () => {
                                         />
                                     </div>
                                     <div className="flex justify-between mt-2 text-[10px] font-black text-gray-400">
-                                        <span>₹0</span>
-                                        <span>₹2,00,000</span>
+                                        <span>{formatPrice(0)}</span>
+                                        <span>{formatPrice(200000)}</span>
                                     </div>
                                 </div>
                             </div>
@@ -371,6 +374,7 @@ const Shop = () => {
                     </div>
                 </div>
             )}
+            <Footer />
         </div>
     );
 };

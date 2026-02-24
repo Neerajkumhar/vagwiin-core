@@ -13,10 +13,13 @@ import {
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import Navbar from '../../components/Navbar';
+import Footer from '../../components/Footer';
 import { useCart } from '../../context/CartContext';
+import { useSettings } from '../../context/SettingsContext';
 
 const Cart = () => {
     const navigate = useNavigate();
+    const { currencySymbol, formatPrice } = useSettings();
     const { cart, loading, updateQuantity, removeFromCart } = useCart();
     const cartItems = cart?.items || [];
 
@@ -117,8 +120,8 @@ const Cart = () => {
                                     {/* Price & Remove */}
                                     <div className="flex flex-col items-end gap-1 md:gap-2">
                                         <div className="text-right">
-                                            <p className="text-[8px] md:text-[10px] text-gray-400 font-black uppercase tracking-widest">₹{item.product.price.toLocaleString()}/unit</p>
-                                            <p className="text-xl md:text-2xl font-black text-gray-900">₹{(item.product.price * item.quantity).toLocaleString()}</p>
+                                            <p className="text-[8px] md:text-[10px] text-gray-400 font-black uppercase tracking-widest">{formatPrice(item.product.price)}/unit</p>
+                                            <p className="text-xl md:text-2xl font-black text-gray-900">{formatPrice(item.product.price * item.quantity)}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -163,7 +166,7 @@ const Cart = () => {
                             <div className="space-y-4 md:space-y-6 relative z-10">
                                 <div className="flex justify-between items-center text-gray-400">
                                     <span className="font-bold uppercase tracking-widest text-[8px] md:text-[10px]">Subtotal</span>
-                                    <span className="text-sm md:text-lg font-black text-white">₹{subtotal.toLocaleString()}</span>
+                                    <span className="text-sm md:text-lg font-black text-white">{formatPrice(subtotal)}</span>
                                 </div>
                                 <div className="flex justify-between items-center text-gray-400">
                                     <span className="font-bold uppercase tracking-widest text-[8px] md:text-[10px]">Shipping</span>
@@ -171,13 +174,13 @@ const Cart = () => {
                                 </div>
                                 <div className="flex justify-between items-center text-gray-400">
                                     <span className="font-bold uppercase tracking-widest text-[8px] md:text-[10px]">GST (18%)</span>
-                                    <span className="text-sm md:text-lg font-black text-white">₹{gst.toLocaleString()}</span>
+                                    <span className="text-sm md:text-lg font-black text-white">{formatPrice(gst)}</span>
                                 </div>
 
                                 <div className="pt-6 md:pt-8 border-t border-white/10 flex flex-col gap-2">
                                     <div className="flex justify-between items-center mb-6">
                                         <span className="text-base md:text-lg font-black uppercase tracking-tighter">Total</span>
-                                        <span className="text-2xl md:text-3xl font-black text-blue-400 font-mono">₹{total.toLocaleString()}</span>
+                                        <span className="text-2xl md:text-3xl font-black text-blue-400 font-mono">{formatPrice(total)}</span>
                                     </div>
 
                                     <button
@@ -216,6 +219,7 @@ const Cart = () => {
                     </div>
                 </div>
             </main >
+            <Footer />
         </div >
     );
 };

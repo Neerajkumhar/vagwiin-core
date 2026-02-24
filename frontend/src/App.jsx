@@ -27,8 +27,11 @@ import DeliveredOrders from './pages/admin/DeliveredOrders';
 import Customers from './pages/admin/Customers';
 import Complaints from './pages/admin/Complaints';
 import Analytics from './pages/admin/Analytics';
+import Settings from './pages/admin/Settings';
 
 import { CartProvider } from './context/CartContext';
+import { SettingsProvider } from './context/SettingsContext';
+import MaintenanceWrapper from './components/MaintenanceWrapper';
 import './App.css';
 
 function App() {
@@ -43,156 +46,166 @@ function App() {
   }, []);
 
   return (
-    <CartProvider>
-      <Router>
-        <ScrollToTop />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/shop" element={<Shop />} />
-          <Route path="/warranty" element={<Warranty />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/contact" element={<Contact />} />
+    <SettingsProvider>
+      <CartProvider>
+        <Router>
+          <MaintenanceWrapper>
+            <ScrollToTop />
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/shop" element={<Shop />} />
+              <Route path="/warranty" element={<Warranty />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/contact" element={<Contact />} />
 
-          {/* Protected Technician Routes */}
-          <Route
-            path="/technician"
-            element={
-              <ProtectedRoute allowedRoles={['technician', 'admin']}>
-                <TechnicianDashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/technician/complaint/:id"
-            element={
-              <ProtectedRoute allowedRoles={['technician', 'admin']}>
-                <ComplaintDetail />
-              </ProtectedRoute>
-            }
-          />
+              {/* Protected Technician Routes */}
+              <Route
+                path="/technician"
+                element={
+                  <ProtectedRoute allowedRoles={['technician', 'admin']}>
+                    <TechnicianDashboard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/technician/complaint/:id"
+                element={
+                  <ProtectedRoute allowedRoles={['technician', 'admin']}>
+                    <ComplaintDetail />
+                  </ProtectedRoute>
+                }
+              />
 
-          <Route path="/product/:id" element={<ProductDetail />} />
+              <Route path="/product/:id" element={<ProductDetail />} />
 
-          {/* Protected Admin Routes */}
-          <Route
-            path="/admin"
-            element={
-              <ProtectedRoute allowedRoles={['admin']}>
-                <Admin />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/orders"
-            element={
-              <ProtectedRoute allowedRoles={['admin']}>
-                <Orders />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/order/:id"
-            element={
-              <ProtectedRoute allowedRoles={['admin']}>
-                <OrderDetail />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/inventory"
-            element={
-              <ProtectedRoute allowedRoles={['admin']}>
-                <Inventory />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/technicians"
-            element={
-              <ProtectedRoute allowedRoles={['admin']}>
-                <Technicians />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/warranties"
-            element={
-              <ProtectedRoute allowedRoles={['admin']}>
-                <ActiveWarranties />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/delivered"
-            element={
-              <ProtectedRoute allowedRoles={['admin']}>
-                <DeliveredOrders />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/customers"
-            element={
-              <ProtectedRoute allowedRoles={['admin']}>
-                <Customers />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/complaints"
-            element={
-              <ProtectedRoute allowedRoles={['admin']}>
-                <Complaints />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/analytics"
-            element={
-              <ProtectedRoute allowedRoles={['admin']}>
-                <Analytics />
-              </ProtectedRoute>
-            }
-          />
+              {/* Protected Admin Routes */}
+              <Route
+                path="/admin"
+                element={
+                  <ProtectedRoute allowedRoles={['admin']}>
+                    <Admin />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/orders"
+                element={
+                  <ProtectedRoute allowedRoles={['admin']}>
+                    <Orders />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/order/:id"
+                element={
+                  <ProtectedRoute allowedRoles={['admin']}>
+                    <OrderDetail />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/inventory"
+                element={
+                  <ProtectedRoute allowedRoles={['admin']}>
+                    <Inventory />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/technicians"
+                element={
+                  <ProtectedRoute allowedRoles={['admin']}>
+                    <Technicians />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/warranties"
+                element={
+                  <ProtectedRoute allowedRoles={['admin']}>
+                    <ActiveWarranties />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/delivered"
+                element={
+                  <ProtectedRoute allowedRoles={['admin']}>
+                    <DeliveredOrders />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/customers"
+                element={
+                  <ProtectedRoute allowedRoles={['admin']}>
+                    <Customers />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/complaints"
+                element={
+                  <ProtectedRoute allowedRoles={['admin']}>
+                    <Complaints />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/analytics"
+                element={
+                  <ProtectedRoute allowedRoles={['admin']}>
+                    <Analytics />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/settings"
+                element={
+                  <ProtectedRoute allowedRoles={['admin']}>
+                    <Settings />
+                  </ProtectedRoute>
+                }
+              />
 
+              <Route path="/cart" element={<Cart />} />
+              <Route path="/checkout" element={<Checkout />} />
 
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/checkout" element={<Checkout />} />
+              {/* Protected User Routes */}
+              <Route
+                path="/profile"
+                element={
+                  <ProtectedRoute>
+                    <Profile />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/my-orders"
+                element={
+                  <ProtectedRoute>
+                    <MyOrders />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/my-order/:id"
+                element={
+                  <ProtectedRoute>
+                    <CustomerOrderDetail />
+                  </ProtectedRoute>
+                }
+              />
 
-          {/* Protected User Routes */}
-          <Route
-            path="/profile"
-            element={
-              <ProtectedRoute>
-                <Profile />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/my-orders"
-            element={
-              <ProtectedRoute>
-                <MyOrders />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/my-order/:id"
-            element={
-              <ProtectedRoute>
-                <CustomerOrderDetail />
-              </ProtectedRoute>
-            }
-          />
-
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          {/* Fallback to Home */}
-          <Route path="*" element={<Home />} />
-        </Routes>
-
-      </Router>
-    </CartProvider>
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+              {/* Fallback to Home */}
+              <Route path="*" element={<Home />} />
+            </Routes>
+          </MaintenanceWrapper>
+        </Router>
+      </CartProvider>
+    </SettingsProvider>
   );
 }
 

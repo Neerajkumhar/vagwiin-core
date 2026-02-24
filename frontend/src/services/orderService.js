@@ -51,6 +51,13 @@ const orderService = {
             headers: getAuthHeader()
         });
         return response.data;
+    },
+
+    deleteOrder: async (id) => {
+        const response = await axios.delete(`${ADMIN_API_URL}/${id}`, {
+            headers: getAuthHeader()
+        });
+        return response.data;
     }
 };
 

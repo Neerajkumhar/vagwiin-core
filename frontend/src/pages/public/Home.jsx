@@ -4,17 +4,19 @@ import Hero from '../../components/Hero';
 import BrandFilters from '../../components/BrandFilters';
 import Sidebar from '../../components/Sidebar';
 import ProductGrid from '../../components/ProductGrid';
+import Footer from '../../components/Footer';
 import {
     Zap,
     ShieldCheck,
     Headphones,
     RotateCcw,
     MessageSquare,
-    Send,
-    ArrowRight
+    Send
 } from 'lucide-react';
+import { useSettings } from '../../context/SettingsContext';
 
 const Home = () => {
+    const { settings } = useSettings();
     const [selectedBrand, setSelectedBrand] = useState('All');
 
     const benefits = [
@@ -202,76 +204,9 @@ const Home = () => {
                     </div>
                 </section>
             </main>
-
-            {/* Premium Footer */}
-            <footer className="bg-slate-50 border-t border-gray-100 pt-32 pb-12">
-                <div className="container mx-auto px-4 md:px-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 mb-20">
-                        <div className="col-span-1 lg:col-span-1">
-                            <h2 className="text-2xl font-black text-slate-900 mb-6 tracking-tighter">VAGWIIN<span className="text-blue-600">.</span></h2>
-                            <p className="text-gray-400 font-medium leading-relaxed mb-8 italic">
-                                Redefining the lifecycle of premium electronics. Sustainable, powerful, and affordable professional tech.
-                            </p>
-                            <div className="flex gap-4">
-                                {[1, 2, 3, 4].map(i => (
-                                    <div key={i} className="w-10 h-10 bg-white border border-gray-100 rounded-xl flex items-center justify-center text-gray-400 hover:text-blue-600 hover:border-blue-100 transition-all cursor-pointer">
-                                        <Zap size={18} />
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        <div>
-                            <h4 className="text-sm font-black text-gray-900 uppercase tracking-[0.2em] mb-8">Shop Tech</h4>
-                            <ul className="space-y-4">
-                                {['MacBooks', 'Workstations', 'Gaming Laptops', 'UltraBooks', 'Office Series'].map(item => (
-                                    <li key={item} className="text-gray-400 font-bold hover:text-blue-600 transition-colors cursor-pointer flex items-center gap-2 group italic">
-                                        <ArrowRight size={14} className="opacity-0 -ml-4 group-hover:opacity-100 group-hover:ml-0 transition-all" />
-                                        {item}
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-
-                        <div>
-                            <h4 className="text-sm font-black text-gray-900 uppercase tracking-[0.2em] mb-8">Support</h4>
-                            <ul className="space-y-4">
-                                {['Warranty Status', 'Repair Service', 'Corporate Sales', 'Privacy Policy', 'Terms of Service'].map(item => (
-                                    <li key={item} className="text-gray-400 font-bold hover:text-blue-600 transition-colors cursor-pointer flex items-center gap-2 group italic">
-                                        <ArrowRight size={14} className="opacity-0 -ml-4 group-hover:opacity-100 group-hover:ml-0 transition-all" />
-                                        {item}
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-
-                        <div>
-                            <h4 className="text-sm font-black text-gray-900 uppercase tracking-[0.2em] mb-8">Headquarters</h4>
-                            <p className="text-gray-400 font-bold leading-relaxed italic mb-4">
-                                Unit 402, Tech Park IV, <br />
-                                Sector 45, Gurgaon, <br />
-                                Haryana, 122003
-                            </p>
-                            <p className="text-blue-600 font-black tracking-tight">+91 (124) 456-7890</p>
-                            <p className="text-gray-400 font-medium">support@vagwiin.com</p>
-                        </div>
-                    </div>
-
-                    <div className="pt-12 border-t border-gray-100 flex flex-col md:flex-row items-center justify-between gap-6">
-                        <p className="text-gray-400 text-[10px] font-black uppercase tracking-[0.25em]">
-                            © 2026 VAGWIIN CORE SYSTEMS PVT LTD. ALL RIGHTS RESERVED.
-                        </p>
-                        <div className="flex gap-8">
-                            <p className="text-[10px] font-black text-gray-300 uppercase tracking-widest cursor-pointer hover:text-blue-400">Security</p>
-                            <p className="text-[10px] font-black text-gray-300 uppercase tracking-widest cursor-pointer hover:text-blue-400">Compliance</p>
-                            <p className="text-[10px] font-black text-gray-300 uppercase tracking-widest cursor-pointer hover:text-blue-400">Sitemap</p>
-                        </div>
-                    </div>
-                </div>
-            </footer>
+            <Footer />
         </div>
     );
 };
 
 export default Home;
-

@@ -2,8 +2,10 @@ import React from 'react';
 import { ShieldCheck, ArrowRight, Star } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import heroLaptop from '../assets/images/hero_laptop.png';
+import { useSettings } from '../context/SettingsContext';
 
 const Hero = () => {
+    const { settings, currencySymbol } = useSettings();
     const navigate = useNavigate();
 
     return (
@@ -26,16 +28,15 @@ const Hero = () => {
                             Next-Gen <br />
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">Refurbished</span> <br />
                             <span className="relative">
-                                Tech Store
+                                {settings.siteName}
                                 <svg className="absolute -bottom-2 left-0 w-full h-3 text-blue-200/60 -z-10" viewBox="0 0 400 20" fill="currentColor">
                                     <path d="M0 10 Q100 0 200 10 Q300 20 400 10" stroke="currentColor" strokeWidth="10" fill="none" />
                                 </svg>
                             </span>
                         </h1>
 
-                        <p className="text-base md:text-lg text-gray-500 mb-10 max-w-xl mx-auto lg:mx-0 font-medium leading-relaxed">
-                            Experience the perfect blend of performance and value. Our rigorously tested
-                            laptops come with enterprise-grade warranty and 24/7 technical support.
+                        <p className="text-base md:text-lg text-gray-500 mb-10 max-w-xl mx-auto lg:mx-0 font-medium leading-relaxed italic">
+                            {settings.homepageBannerText}
                         </p>
 
                         <div className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
@@ -84,7 +85,7 @@ const Hero = () => {
                             <div className="absolute -bottom-10 -left-5 px-6 py-4 bg-white/80 backdrop-blur-md rounded-3xl shadow-2xl border border-white/20 animate-float-slow hidden sm:block" style={{ animationDelay: '1s' }}>
                                 <div className="flex items-center gap-3">
                                     <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center">
-                                        <div className="text-blue-600 font-black text-lg font-sans">₹</div>
+                                        <div className="text-blue-600 font-black text-lg font-sans">{currencySymbol}</div>
                                     </div>
                                     <div>
                                         <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none mb-1">Savings</p>

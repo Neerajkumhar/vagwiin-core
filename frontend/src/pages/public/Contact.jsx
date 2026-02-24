@@ -10,11 +10,15 @@ import {
     ChevronRight,
     Instagram,
     Facebook,
-    Twitter
+    Twitter,
+    Linkedin
 } from 'lucide-react';
 import Navbar from '../../components/Navbar';
+import Footer from '../../components/Footer';
+import { useSettings } from '../../context/SettingsContext';
 
 const Contact = () => {
+    const { settings } = useSettings();
     return (
         <div className="min-h-screen bg-[#f8fbff] flex flex-col font-sans mb-20">
             <Navbar />
@@ -37,7 +41,7 @@ const Contact = () => {
                             </div>
                             <h3 className="text-xl font-black text-gray-900 mb-2">Speak with Us</h3>
                             <p className="text-sm font-bold text-gray-400 mb-6">Mon-Fri from 9am to 6pm.</p>
-                            <a href="tel:+919876543210" className="text-lg font-black text-blue-600 hover:underline">+91 98765 43210</a>
+                            <a href={`tel:${settings.contactPhone}`} className="text-lg font-black text-blue-600 hover:underline">{settings.contactPhone}</a>
                         </div>
 
                         <div className="bg-white p-10 rounded-[48px] border border-gray-100 shadow-sm transition-all hover:shadow-xl group">
@@ -46,7 +50,7 @@ const Contact = () => {
                             </div>
                             <h3 className="text-xl font-black text-gray-900 mb-2">Email Support</h3>
                             <p className="text-sm font-bold text-gray-400 mb-6">We'll respond within 24 hours.</p>
-                            <a href="mailto:support@vagwiin.com" className="text-lg font-black text-green-600 hover:underline">support@vagwiin.com</a>
+                            <a href={`mailto:${settings.contactEmail}`} className="text-lg font-black text-green-600 hover:underline">{settings.contactEmail}</a>
                         </div>
 
                         <div className="bg-slate-900 p-10 rounded-[48px] text-white relative overflow-hidden group">
@@ -56,7 +60,7 @@ const Contact = () => {
                             </div>
                             <h3 className="text-xl font-black mb-2">Our Office</h3>
                             <p className="text-sm font-bold text-gray-400">Visit us at our headquarters.</p>
-                            <p className="mt-4 text-sm font-medium leading-relaxed">123 Tech Hub, Cyber City, Phase III, Gurgaon, Haryana 122002</p>
+                            <p className="mt-4 text-sm font-medium leading-relaxed whitespace-pre-line">{settings.address}</p>
                         </div>
                     </div>
 
@@ -108,15 +112,26 @@ const Contact = () => {
                         <div className="mt-12 flex flex-wrap items-center justify-center gap-10">
                             <p className="text-xs font-black text-gray-400 uppercase tracking-[0.4em]">Follow Us Online</p>
                             <div className="flex items-center gap-6">
-                                <a href="#" className="p-4 bg-white rounded-2xl border border-gray-100 text-gray-400 hover:text-blue-600 hover:border-blue-100 transition-all shadow-sm">
-                                    <Instagram size={20} />
-                                </a>
-                                <a href="#" className="p-4 bg-white rounded-2xl border border-gray-100 text-gray-400 hover:text-blue-600 hover:border-blue-100 transition-all shadow-sm">
-                                    <Facebook size={20} />
-                                </a>
-                                <a href="#" className="p-4 bg-white rounded-2xl border border-gray-100 text-gray-400 hover:text-blue-600 hover:border-blue-100 transition-all shadow-sm">
-                                    <Twitter size={20} />
-                                </a>
+                                {settings.socialLinks?.instagram && (
+                                    <a href={settings.socialLinks.instagram} target="_blank" rel="noopener noreferrer" className="p-4 bg-white rounded-2xl border border-gray-100 text-gray-400 hover:text-blue-600 hover:border-blue-100 transition-all shadow-sm">
+                                        <Instagram size={20} />
+                                    </a>
+                                )}
+                                {settings.socialLinks?.facebook && (
+                                    <a href={settings.socialLinks.facebook} target="_blank" rel="noopener noreferrer" className="p-4 bg-white rounded-2xl border border-gray-100 text-gray-400 hover:text-blue-600 hover:border-blue-100 transition-all shadow-sm">
+                                        <Facebook size={20} />
+                                    </a>
+                                )}
+                                {settings.socialLinks?.twitter && (
+                                    <a href={settings.socialLinks.twitter} target="_blank" rel="noopener noreferrer" className="p-4 bg-white rounded-2xl border border-gray-100 text-gray-400 hover:text-blue-600 hover:border-blue-100 transition-all shadow-sm">
+                                        <Twitter size={20} />
+                                    </a>
+                                )}
+                                {settings.socialLinks?.linkedin && (
+                                    <a href={settings.socialLinks.linkedin} target="_blank" rel="noopener noreferrer" className="p-4 bg-white rounded-2xl border border-gray-100 text-gray-400 hover:text-blue-600 hover:border-blue-100 transition-all shadow-sm">
+                                        <Linkedin size={20} />
+                                    </a>
+                                )}
                                 <a href="#" className="p-4 bg-white rounded-2xl border border-gray-100 text-gray-400 hover:text-blue-600 hover:border-blue-100 transition-all shadow-sm">
                                     <Globe2 size={20} />
                                 </a>
@@ -125,6 +140,7 @@ const Contact = () => {
                     </div>
                 </div>
             </main>
+            <Footer />
         </div>
     );
 };

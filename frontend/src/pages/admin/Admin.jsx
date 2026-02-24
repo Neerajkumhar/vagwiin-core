@@ -30,8 +30,10 @@ import productService from '../../services/productService';
 import warrantyService from '../../services/warrantyService';
 import customerService from '../../services/customerService';
 import { formatDate } from '../../utils/dateUtils';
+import { useSettings } from '../../context/SettingsContext';
 
 const Admin = () => {
+    const { settings, currencySymbol } = useSettings();
     const [orders, setOrders] = useState([]);
     const [products, setProducts] = useState([]);
     const [warranties, setWarranties] = useState([]);
@@ -120,7 +122,7 @@ const Admin = () => {
         { label: 'Available Units', value: stats.totalProducts, icon: Laptop, color: 'text-blue-600', bg: 'bg-blue-50', dot: 'bg-blue-400' },
         { label: 'Orders Today', value: stats.ordersToday, icon: ShoppingCart, color: 'text-green-600', bg: 'bg-green-50', dot: 'bg-green-400' },
         { label: 'Pending Repairs', value: stats.pendingRepairs, icon: Wrench, color: 'text-orange-600', bg: 'bg-orange-50', dot: 'bg-orange-400' },
-        { label: 'Sales Today', value: `₹${stats.salesToday.toLocaleString()}`, icon: IndianRupee, color: 'text-purple-600', bg: 'bg-purple-50', dot: 'bg-purple-400' },
+        { label: 'Sales Today', value: `${currencySymbol}${stats.salesToday.toLocaleString()}`, icon: ShoppingCart, color: 'text-purple-600', bg: 'bg-purple-50', dot: 'bg-purple-400' },
     ];
 
     const totalAvailableUnits = products.reduce((sum, p) => sum + (p.stock || 0), 0);
@@ -157,7 +159,7 @@ const Admin = () => {
                 <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-10">
                     <div className="mb-8 md:mb-12">
                         <h1 className="text-xl md:text-3xl font-black text-gray-900 tracking-tight">Enterprise Overview</h1>
-                        <p className="text-xs md:text-sm text-gray-400 font-medium tracking-wide mt-1">Real-time metrics from Vagwiin Core database.</p>
+                        <p className="text-xs md:text-sm text-gray-400 font-medium tracking-wide mt-1">Real-time metrics from {settings.siteName} Core database.</p>
                     </div>
 
                     {/* Stats Grid */}
@@ -232,7 +234,7 @@ const Admin = () => {
                                     <p className="text-xs text-blue-500 font-bold uppercase tracking-widest">7-Day Sales Trend</p>
                                 </div>
                                 <div className="px-4 py-2 bg-gray-50 rounded-xl text-[10px] font-black text-gray-400 uppercase tracking-widest">
-                                    Total: ₹{(orders.reduce((sum, o) => sum + o.totalPrice, 0) + customers.reduce((sum, c) => sum + (c.totalSales || 0), 0)).toLocaleString()}
+                                    Total: {currencySymbol}{(orders.reduce((sum, o) => sum + o.totalPrice, 0) + customers.reduce((sum, c) => sum + (c.totalSales || 0), 0)).toLocaleString()}
                                 </div>
                             </div>
                             <div className="h-56">
@@ -240,7 +242,7 @@ const Admin = () => {
                                     <BarChart data={salesTrend}>
                                         <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f8fbff" />
                                         <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#94a3b8', fontWeight: 900 }} />
-                                        <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#94a3b8', fontWeight: 900 }} tickFormatter={(val) => `₹${val >= 1000 ? (val / 1000).toFixed(1) + 'k' : val}`} />
+                                        <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#94a3b8', fontWeight: 900 }} tickFormatter={(val) => `${currencySymbol}${val >= 1000 ? (val / 1000).toFixed(1) + 'k' : val}`} />
                                         <Tooltip
                                             cursor={{ fill: '#f8fbff' }}
                                             contentStyle={{ borderRadius: '24px', border: 'none', boxShadow: '0 10px 30px rgba(0,0,0,0.05)', fontWeight: 'bold' }}
@@ -330,7 +332,7 @@ const Admin = () => {
                                                         Grade {product.grade || 'A'}
                                                     </span>
                                                 </td>
-                                                <td className="py-6 text-right text-sm font-black text-gray-900">₹{product.price.toLocaleString()}</td>
+                                                <td className="py-6 text-right text-sm font-black text-gray-900">{currencySymbol}{product.price.toLocaleString()}</td>
                                             </tr>
                                         ))}
                                     </tbody>

@@ -161,4 +161,27 @@ router.put('/:id/serial-number', protect, admin, async (req, res) => {
     }
 });
 
+// @desc    Delete order
+// @route   DELETE /api/admin/orders/:id
+// @access  Private/Admin
+router.delete('/:id', protect, admin, async (req, res) => {
+    try {
+        const order = await Order.findById(req.params.id);
+
+        if (order) {
+            // Restore stock if it was deducted before deleting
+            if (order.stockDeducted) {
+                await restoreStock(order);
+            }
+
+            await Order.findByIdAndDelete(req.params.id);
+            res.json({ message: 'Order removed' });
+        } else {
+            res.status(404).json({ message: 'Order not found' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
 module.exports = router;

@@ -20,6 +20,7 @@ import Navbar from '../../components/Navbar';
 import warrantyService from '../../services/warrantyService';
 import { formatDateFull } from '../../utils/dateUtils';
 import WarrantyResult from '../../components/WarrantyResult';
+import Footer from '../../components/Footer';
 import warrantyHero from '../../assets/images/warranty_hero.png';
 
 const Warranty = () => {
@@ -270,14 +271,7 @@ const Warranty = () => {
                     />
                 </main>
             )}
-
-            <footer className="bg-white border-t border-gray-100 py-8 md:py-12">
-                <div className="container mx-auto px-6 text-center">
-                    <p className="text-gray-400 text-[11px] md:text-sm font-bold">
-                        © 2026 <span className="text-gray-900">Vagwiin Care</span>. Protecting your digital future.
-                    </p>
-                </div>
-            </footer>
+            <Footer />
         </div>
     );
 };

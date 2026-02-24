@@ -18,9 +18,11 @@ import {
 import Navbar from '../../components/Navbar';
 import SidebarAdmin from '../../components/SidebarAdmin';
 import orderService from '../../services/orderService';
+import { useSettings } from '../../context/SettingsContext';
 import { formatDate } from '../../utils/dateUtils';
 
 const DeliveredOrders = () => {
+    const { currencySymbol } = useSettings();
     const navigate = useNavigate();
     const [searchTerm, setSearchTerm] = useState('');
     const [orders, setOrders] = useState([]);
@@ -54,6 +56,19 @@ const DeliveredOrders = () => {
             amount: data.reduce((sum, o) => sum + o.totalPrice, 0)
         };
         setStats(stats);
+    };
+
+    const handleDeleteOrder = async (id) => {
+        if (window.confirm('Are you sure you want to delete this completed order record? This action cannot be undone.')) {
+            try {
+                await orderService.deleteOrder(id);
+                fetchOrders(); // Refresh list
+            } catch (error) {
+                console.error('Error deleting order:', error);
+                const message = error.response?.data?.message || 'Failed to delete order';
+                alert(message);
+            }
+        }
     };
 
     const filteredOrders = orders.filter(order =>
@@ -111,7 +126,7 @@ const DeliveredOrders = () => {
                                 </div>
                                 <div>
                                     <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Total Value</p>
-                                    <p className="text-xl font-black text-gray-900">₹{stats.amount.toLocaleString()}</p>
+                                    <p className="text-xl font-black text-gray-900">{currencySymbol}{stats.amount.toLocaleString()}</p>
                                 </div>
                             </div>
                         </div>
@@ -185,7 +200,7 @@ const DeliveredOrders = () => {
                                                     <span className="text-sm text-gray-400 font-medium">{formatDate(order.updatedAt)}</span>
                                                 </td>
                                                 <td className="px-4 py-4 text-right whitespace-nowrap">
-                                                    <span className="text-sm font-black text-gray-900">₹{order.totalPrice.toLocaleString()}</span>
+                                                    <span className="text-sm font-black text-gray-900">{currencySymbol}{order.totalPrice.toLocaleString()}</span>
                                                     <p className="text-[10px] text-gray-400 font-bold uppercase tracking-tighter">{order.paymentMethod}</p>
                                                 </td>
                                                 <td className="px-4 py-4 text-center">
@@ -202,7 +217,11 @@ const DeliveredOrders = () => {
                                                         >
                                                             <Eye size={18} />
                                                         </button>
-                                                        <button className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all" title="Archive">
+                                                        <button
+                                                            onClick={() => handleDeleteOrder(order._id)}
+                                                            className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                                                            title="Delete Order"
+                                                        >
                                                             <Trash2 size={18} />
                                                         </button>
                                                     </div>

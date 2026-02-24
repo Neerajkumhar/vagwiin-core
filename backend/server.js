@@ -14,6 +14,7 @@ const authRoutes = require('./routes/auth/authRoutes');
 const productRoutes = require('./routes/admin/productRoutes');
 const customerRoutes = require('./routes/admin/customerRoutes');
 const adminOrderRoutes = require('./routes/admin/orderRoutes');
+const settingsRoutes = require('./routes/admin/settingsRoutes');
 const complaintRoutes = require('./routes/complaintRoutes');
 
 // USER ROUTES
@@ -43,6 +44,9 @@ app.use('/api/orders', userOrderRoutes);
 app.use('/api/warranties', warrantyRoutes);
 app.use('/api/customers', customerRoutes);
 app.use('/api/complaints', complaintRoutes);
+// ADMIN SETTINGS
+console.log('Registering settings routes...');
+app.use('/api/admin/settings', settingsRoutes);
 
 
 app.get('/', (req, res) => {

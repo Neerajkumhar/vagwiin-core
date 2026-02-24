@@ -14,11 +14,14 @@ import {
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import Navbar from '../../components/Navbar';
+import Footer from '../../components/Footer';
+import { useSettings } from '../../context/SettingsContext';
 import cartService from '../../services/cartService';
 import orderService from '../../services/orderService';
 import authService from '../../services/authService';
 
 const Checkout = () => {
+    const { currencySymbol, formatPrice } = useSettings();
     const navigate = useNavigate();
     const [paymentMethod, setPaymentMethod] = useState('card');
     const [isOrderSuccess, setIsOrderSuccess] = useState(false);
@@ -31,6 +34,12 @@ const Checkout = () => {
         phone: '',
         city: '',
         address: ''
+    });
+    const [paymentDetails, setPaymentDetails] = useState({
+        cardNumber: '',
+        expiry: '',
+        cvv: '',
+        upiId: ''
     });
 
     useEffect(() => {
@@ -72,6 +81,46 @@ const Checkout = () => {
         }));
     };
 
+    const handlePaymentChange = (e) => {
+        const { name, value } = e.target;
+        let formattedValue = value;
+
+        if (name === 'cardNumber') {
+            // Remove all non-digit characters
+            const digits = value.replace(/\D/g, '');
+            // Limit to 16 digits
+            const limitedDigits = digits.slice(0, 16);
+            // Add space every 4 digits
+            formattedValue = limitedDigits.match(/.{1,4}/g)?.join(' ') || limitedDigits;
+        } else if (name === 'expiry') {
+            // Remove all non-digit characters
+            const digits = value.replace(/\D/g, '');
+            // Limit to 4 digits (MMYY)
+            const limitedDigits = digits.slice(0, 4);
+            if (limitedDigits.length > 2) {
+                formattedValue = `${limitedDigits.slice(0, 2)}/${limitedDigits.slice(2)}`;
+            } else {
+                formattedValue = limitedDigits;
+            }
+        } else if (name === 'cvv') {
+            // Remove all non-digit characters and limit to 4 digits
+            formattedValue = value.replace(/\D/g, '').slice(0, 4);
+        } else if (name === 'upiId') {
+            // Lowercase, remove spaces, and only allow alphanumeric, @, dot, and hyphen
+            formattedValue = value.toLowerCase().replace(/\s/g, '').replace(/[^a-z0-7.@-]/g, '');
+            // Ensure only one @ symbol
+            const parts = formattedValue.split('@');
+            if (parts.length > 2) {
+                formattedValue = parts[0] + '@' + parts.slice(1).join('');
+            }
+        }
+
+        setPaymentDetails(prev => ({
+            ...prev,
+            [name]: formattedValue
+        }));
+    };
+
     const handlePlaceOrder = async () => {
         if (!shippingInfo.fullName || !shippingInfo.email || !shippingInfo.phone || !shippingInfo.city || !shippingInfo.address) {
             alert('Please fill in all shipping details');
@@ -81,6 +130,25 @@ const Checkout = () => {
         if (!cartData || cartData.items.length === 0) {
             alert('Your cart is empty');
             return;
+        }
+
+        // Validate payment details
+        if (paymentMethod === 'card') {
+            if (!paymentDetails.cardNumber || !paymentDetails.expiry || !paymentDetails.cvv) {
+                alert('Please fill in all card details');
+                return;
+            }
+        } else if (paymentMethod === 'upi') {
+            if (!paymentDetails.upiId) {
+                alert('Please enter your UPI ID');
+                return;
+            }
+            // Simple regex for UPI validation: something@something
+            const upiRegex = /^[\w.-]+@[\w.-]+$/;
+            if (!upiRegex.test(paymentDetails.upiId)) {
+                alert('Please enter a valid UPI ID (e.g. name@bank)');
+                return;
+            }
         }
 
         try {
@@ -261,7 +329,16 @@ const Checkout = () => {
                                     <div className="flex flex-col gap-1.5 md:gap-2">
                                         <label className="text-[8px] md:text-[10px] font-black text-gray-400 uppercase tracking-widest">Card Number</label>
                                         <div className="relative">
-                                            <input type="text" placeholder="**** **** **** 4242" className="w-full pl-4 md:pl-6 pr-12 md:pr-14 py-3 md:py-4 bg-white border-2 border-transparent rounded-xl md:rounded-2xl text-xs md:text-sm font-bold text-gray-700 outline-none focus:border-blue-100 transition-all font-mono" />
+                                            <input
+                                                type="text"
+                                                name="cardNumber"
+                                                value={paymentDetails.cardNumber}
+                                                onChange={handlePaymentChange}
+                                                maxLength="19"
+                                                inputMode="numeric"
+                                                placeholder="**** **** **** 4242"
+                                                className="w-full pl-4 md:pl-6 pr-12 md:pr-14 py-3 md:py-4 bg-white border-2 border-transparent rounded-xl md:rounded-2xl text-xs md:text-sm font-bold text-gray-700 outline-none focus:border-blue-100 transition-all font-mono"
+                                            />
                                             <div className="absolute right-4 top-1/2 -translate-y-1/2 flex gap-1">
                                                 <div className="w-6 h-4 md:w-8 md:h-5 bg-gray-200 rounded"></div>
                                                 <div className="w-6 h-4 md:w-8 md:h-5 bg-gray-200 rounded"></div>
@@ -271,12 +348,65 @@ const Checkout = () => {
                                     <div className="grid grid-cols-2 gap-4 md:gap-6">
                                         <div className="flex flex-col gap-1.5 md:gap-2">
                                             <label className="text-[8px] md:text-[10px] font-black text-gray-400 uppercase tracking-widest">Expiry</label>
-                                            <input type="text" placeholder="MM/YY" className="px-4 py-3 md:px-6 md:py-4 bg-white border-2 border-transparent rounded-xl md:rounded-2xl text-xs md:text-sm font-bold text-gray-700 outline-none focus:border-blue-100 transition-all font-mono" />
+                                            <input
+                                                type="text"
+                                                name="expiry"
+                                                value={paymentDetails.expiry}
+                                                onChange={handlePaymentChange}
+                                                maxLength="5"
+                                                inputMode="numeric"
+                                                placeholder="MM/YY"
+                                                className="px-4 py-3 md:px-6 md:py-4 bg-white border-2 border-transparent rounded-xl md:rounded-2xl text-xs md:text-sm font-bold text-gray-700 outline-none focus:border-blue-100 transition-all font-mono"
+                                            />
                                         </div>
                                         <div className="flex flex-col gap-1.5 md:gap-2">
                                             <label className="text-[8px] md:text-[10px] font-black text-gray-400 uppercase tracking-widest">CVV</label>
-                                            <input type="text" placeholder="***" className="px-4 py-3 md:px-6 md:py-4 bg-white border-2 border-transparent rounded-xl md:rounded-2xl text-xs md:text-sm font-bold text-gray-700 outline-none focus:border-blue-100 transition-all font-mono" />
+                                            <input
+                                                type="text"
+                                                name="cvv"
+                                                value={paymentDetails.cvv}
+                                                onChange={handlePaymentChange}
+                                                maxLength="4"
+                                                inputMode="numeric"
+                                                placeholder="***"
+                                                className="px-4 py-3 md:px-6 md:py-4 bg-white border-2 border-transparent rounded-xl md:rounded-2xl text-xs md:text-sm font-bold text-gray-700 outline-none focus:border-blue-100 transition-all font-mono"
+                                            />
                                         </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {paymentMethod === 'upi' && (
+                                <div className="bg-gray-50 p-5 md:p-8 rounded-2xl md:rounded-3xl space-y-4 md:space-y-6 animate-in slide-in-from-top-2 duration-300 text-center">
+                                    <div className="w-20 h-20 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                                        <Wallet className="text-blue-600" size={32} />
+                                    </div>
+                                    <div className="flex flex-col gap-1.5 md:gap-2 text-left">
+                                        <label className="text-[8px] md:text-[10px] font-black text-gray-400 uppercase tracking-widest">UPI ID</label>
+                                        <input
+                                            type="text"
+                                            name="upiId"
+                                            value={paymentDetails.upiId}
+                                            onChange={handlePaymentChange}
+                                            placeholder="username@bank"
+                                            className="w-full px-4 py-3 md:px-6 md:py-4 bg-white border-2 border-transparent rounded-xl md:rounded-2xl text-xs md:text-sm font-bold text-gray-700 outline-none focus:border-blue-100 transition-all font-mono"
+                                        />
+                                    </div>
+                                    <p className="text-[10px] text-gray-400 font-medium">UPI ID usually looks like <span className="font-bold">name@upi</span> or <span className="font-bold">phone@okaxis</span></p>
+                                </div>
+                            )}
+
+                            {paymentMethod === 'cod' && (
+                                <div className="bg-gray-50 p-6 md:p-10 rounded-2xl md:rounded-3xl space-y-4 animate-in slide-in-from-top-2 duration-300 text-center">
+                                    <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 border-4 border-white shadow-sm">
+                                        <Truck className="text-green-600" size={32} />
+                                    </div>
+                                    <h4 className="text-lg font-black text-gray-900 tracking-tight">Zero Advance Payment</h4>
+                                    <p className="text-sm text-gray-500 font-medium leading-relaxed max-w-sm mx-auto">
+                                        Pay only when your premium device is delivered and inspected. Our agent will collect flow via Cash or UPI at your doorstep.
+                                    </p>
+                                    <div className="inline-block px-4 py-1.5 bg-green-50 text-green-600 rounded-full text-[10px] font-black uppercase tracking-widest mt-2">
+                                        Safe & Secure
                                     </div>
                                 </div>
                             )}
@@ -300,7 +430,7 @@ const Checkout = () => {
                                             <div className="flex-1 min-w-0">
                                                 <p className="text-[10px] md:text-xs font-bold text-white truncate">{item.product.name}</p>
                                                 <p className="text-[8px] md:text-[10px] text-gray-400 font-bold uppercase tracking-tight">
-                                                    ₹{item.product.price.toLocaleString()} x {item.quantity}
+                                                    {formatPrice(item.product.price)} x {item.quantity}
                                                 </p>
                                             </div>
                                         </div>
@@ -310,7 +440,7 @@ const Checkout = () => {
                                 <div className="pt-6 border-t border-white/10 space-y-3 md:space-y-4">
                                     <div className="flex justify-between text-[10px] font-bold text-gray-400 uppercase tracking-widest">
                                         <span>Subtotal</span>
-                                        <span className="text-white">₹{subtotal.toLocaleString()}</span>
+                                        <span className="text-white">{formatPrice(subtotal)}</span>
                                     </div>
                                     <div className="flex justify-between text-[10px] font-bold text-gray-400 uppercase tracking-widest">
                                         <span>Shipping</span>
@@ -318,14 +448,14 @@ const Checkout = () => {
                                     </div>
                                     <div className="flex justify-between text-[10px] font-bold text-gray-400 uppercase tracking-widest">
                                         <span>Tax (GST 18%)</span>
-                                        <span className="text-white">₹{gst.toLocaleString()}</span>
+                                        <span className="text-white">{formatPrice(gst)}</span>
                                     </div>
                                 </div>
 
                                 <div className="pt-6 border-t border-white/10">
                                     <div className="flex justify-between items-center mb-6 md:mb-8">
                                         <span className="text-base md:text-lg font-black uppercase tracking-tighter">Net Payable</span>
-                                        <span className="text-2xl md:text-3xl font-black text-blue-400 font-mono">₹{total.toLocaleString()}</span>
+                                        <span className="text-2xl md:text-3xl font-black text-blue-400 font-mono">{formatPrice(total)}</span>
                                     </div>
 
                                     <button
@@ -399,7 +529,8 @@ const Checkout = () => {
                     </div>
                 </div>
             )}
-        </div>
+            <Footer />
+        </div >
     );
 };
 

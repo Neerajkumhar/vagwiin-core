@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
     CheckCircle2,
     Clock,
@@ -13,8 +14,11 @@ import {
 import { formatDateFull } from '../utils/dateUtils';
 import warrantyService from '../services/warrantyService';
 import complaintService from '../services/complaintService';
+import { useSettings } from '../context/SettingsContext';
 
 const WarrantyResult = ({ data, onBack, isAdmin = false }) => {
+    const { currencySymbol } = useSettings();
+    const navigate = useNavigate();
     const [showUpgradeForm, setShowUpgradeForm] = useState(false);
     const [showDiagnosisForm, setShowDiagnosisForm] = useState(false);
     const [selectedPlan, setSelectedPlan] = useState(null);
@@ -89,7 +93,7 @@ const WarrantyResult = ({ data, onBack, isAdmin = false }) => {
         const user = JSON.parse(localStorage.getItem('user'));
 
         if (!user) {
-            alert('Please login to book a diagnosis');
+            navigate('/login');
             return;
         }
 
@@ -169,7 +173,7 @@ const WarrantyResult = ({ data, onBack, isAdmin = false }) => {
                                             <span className="text-[9px] md:text-[10px] font-black text-blue-600 uppercase tracking-widest mt-1 inline-block">{plan.duration}</span>
                                         </div>
                                         <div className="text-right shrink-0">
-                                            <p className="text-lg md:text-xl font-black text-gray-900 font-mono">₹{plan.price.toLocaleString()}</p>
+                                            <p className="text-lg md:text-xl font-black text-gray-900 font-mono">{currencySymbol}{plan.price.toLocaleString()}</p>
                                         </div>
                                     </div>
                                     <ul className="space-y-2">
@@ -222,7 +226,7 @@ const WarrantyResult = ({ data, onBack, isAdmin = false }) => {
                             <div className="pt-6 border-t border-gray-100">
                                 <div className="flex justify-between items-center mb-6">
                                     <span className="text-xs md:text-sm font-bold text-gray-500">Order Total</span>
-                                    <span className="text-lg md:text-2xl font-black text-gray-900 font-mono">₹{selectedPlan ? selectedPlan.price.toLocaleString() : '0'}</span>
+                                    <span className="text-lg md:text-2xl font-black text-gray-900 font-mono">{currencySymbol}{selectedPlan ? selectedPlan.price.toLocaleString() : '0'}</span>
                                 </div>
                                 <button
                                     disabled={!selectedPlan || isProcessing}

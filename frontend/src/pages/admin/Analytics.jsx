@@ -13,8 +13,10 @@ import orderService from '../../services/orderService';
 import productService from '../../services/productService';
 import customerService from '../../services/customerService';
 import warrantyService from '../../services/warrantyService';
+import { useSettings } from '../../context/SettingsContext';
 
 const Analytics = () => {
+    const { settings, currencySymbol } = useSettings();
     const [loading, setLoading] = useState(true);
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [data, setData] = useState({
@@ -247,7 +249,7 @@ const Analytics = () => {
                                                 <div class="grid">
                                                     <div class="card">
                                                         <div class="card-label">Revenue</div>
-                                                        <div class="card-value">₹${data.stats.totalRevenue.toLocaleString()}</div>
+                                                        <div class="card-value">${currencySymbol}${data.stats.totalRevenue.toLocaleString()}</div>
                                                     </div>
                                                     <div class="card">
                                                         <div class="card-label">Orders</div>
@@ -277,9 +279,9 @@ const Analytics = () => {
                                                         ${data.revenue.map(r => `
                                                             <tr>
                                                                 <td>${r.name} 2024</td>
-                                                                <td>₹${r.revenue.toLocaleString()}</td>
+                                                                <td>${currencySymbol}${r.revenue.toLocaleString()}</td>
                                                                 <td>${r.orders}</td>
-                                                                <td>₹${(r.orders > 0 ? (r.revenue / r.orders).toFixed(0) : 0).toLocaleString()}</td>
+                                                                <td>${currencySymbol}${(r.orders > 0 ? (r.revenue / r.orders).toFixed(0) : 0).toLocaleString()}</td>
                                                             </tr>
                                                         `).join('')}
                                                     </tbody>
@@ -301,7 +303,7 @@ const Analytics = () => {
                                                                 <td style="font-weight:700">#${i + 1}</td>
                                                                 <td>${p.name}</td>
                                                                 <td>${p.sales}</td>
-                                                                <td style="font-weight:700">₹${p.revenue.toLocaleString()}</td>
+                                                                <td style="font-weight:700">${currencySymbol}${p.revenue.toLocaleString()}</td>
                                                             </tr>
                                                         `).join('')}
                                                     </tbody>
@@ -360,7 +362,7 @@ const Analytics = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-10">
                         <MetricCard
                             title="Total Revenue"
-                            value={`₹${data.stats.totalRevenue.toLocaleString()}`}
+                            value={`${currencySymbol}${data.stats.totalRevenue.toLocaleString()}`}
                             growth={data.stats.revenueGrowth}
                             icon={DollarSign}
                             color="blue"
@@ -429,7 +431,7 @@ const Analytics = () => {
                                             axisLine={false}
                                             tickLine={false}
                                             tick={{ fontSize: 12, fill: '#64748b', fontWeight: 700 }}
-                                            tickFormatter={(val) => `₹${val >= 1000 ? (val / 1000).toFixed(0) + 'k' : val}`}
+                                            tickFormatter={(val) => `${currencySymbol}${val >= 1000 ? (val / 1000).toFixed(0) + 'k' : val}`}
                                         />
                                         <Tooltip
                                             content={<CustomTooltip />}
@@ -514,7 +516,7 @@ const Analytics = () => {
                                             </div>
                                         </div>
                                         <div className="text-right">
-                                            <p className="text-sm font-black text-slate-900">₹{product.revenue.toLocaleString()}</p>
+                                            <p className="text-sm font-black text-slate-900">{currencySymbol}{product.revenue.toLocaleString()}</p>
                                             <div className="flex items-center justify-end gap-1 text-[10px] text-green-500 font-black">
                                                 <ArrowUpRight size={12} />
                                                 <span>{(Math.random() * 20).toFixed(1)}%</span>
@@ -598,6 +600,7 @@ const MetricCard = ({ title, value, growth, icon: Icon, color }) => {
 };
 
 const CustomTooltip = ({ active, payload, label }) => {
+    const { currencySymbol } = useSettings();
     if (active && payload && payload.length) {
         return (
             <div className="bg-slate-900 p-4 rounded-2xl shadow-2xl border border-slate-800">
@@ -606,7 +609,7 @@ const CustomTooltip = ({ active, payload, label }) => {
                     <div key={index} className="flex items-center gap-3">
                         <div className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.color }}></div>
                         <p className="text-sm font-bold text-white">
-                            {entry.name}: <span className="font-black">{entry.name === 'revenue' ? `₹${entry.value.toLocaleString()}` : entry.value}</span>
+                            {entry.name}: <span className="font-black">{entry.name === 'revenue' ? `${currencySymbol}${entry.value.toLocaleString()}` : entry.value}</span>
                         </p>
                     </div>
                 ))}

@@ -16,9 +16,11 @@ import { Link, useNavigate } from 'react-router-dom';
 import Navbar from '../../components/Navbar';
 import orderService from '../../services/orderService';
 import authService from '../../services/authService';
+import { useSettings } from '../../context/SettingsContext';
 import { formatDate } from '../../utils/dateUtils';
 
 const MyOrders = () => {
+    const { currencySymbol, formatPrice } = useSettings();
     const navigate = useNavigate();
     const [searchTerm, setSearchTerm] = useState('');
     const [orders, setOrders] = useState([]);
@@ -131,7 +133,7 @@ const MyOrders = () => {
                                     <div className="w-full md:w-auto flex flex-row md:flex-col items-center justify-between md:justify-end gap-4 md:gap-4 md:min-w-[150px] border-t md:border-none pt-4 md:pt-0">
                                         <div className="text-left md:text-right">
                                             <p className="text-[8px] md:text-[10px] text-gray-400 font-black uppercase tracking-widest mb-0.5 md:mb-1">Total Amount</p>
-                                            <p className="text-lg md:text-2xl font-black text-blue-600 font-mono">₹{order.totalPrice.toLocaleString()}</p>
+                                            <p className="text-lg md:text-2xl font-black text-blue-600 font-mono">{formatPrice(order.totalPrice)}</p>
                                         </div>
                                         <button
                                             onClick={() => navigate(`/my-order/${order._id}`)}

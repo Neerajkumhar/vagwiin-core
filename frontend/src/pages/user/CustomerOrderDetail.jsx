@@ -14,9 +14,11 @@ import {
 import Navbar from '../../components/Navbar';
 import orderService from '../../services/orderService';
 import authService from '../../services/authService';
+import { useSettings } from '../../context/SettingsContext';
 import { formatDate } from '../../utils/dateUtils';
 
 const CustomerOrderDetail = () => {
+    const { settings, currencySymbol } = useSettings();
     const { id } = useParams();
     const navigate = useNavigate();
     const [order, setOrder] = useState(null);
@@ -152,7 +154,7 @@ const CustomerOrderDetail = () => {
                                             <p className="text-[10px] md:text-xs text-gray-400 font-bold mt-1">Qty: {item.quantity}</p>
                                         </div>
                                         <div className="text-right shrink-0">
-                                            <p className="font-black text-gray-900 text-xs md:text-sm whitespace-nowrap font-mono">₹{item.price.toLocaleString()}</p>
+                                            <p className="font-black text-gray-900 text-xs md:text-sm whitespace-nowrap font-mono">{currencySymbol}{item.price.toLocaleString()}</p>
                                         </div>
                                     </div>
                                 ))}
@@ -169,15 +171,15 @@ const CustomerOrderDetail = () => {
                             <div className="space-y-4">
                                 <div className="flex justify-between text-[10px] font-bold text-gray-500 uppercase tracking-widest">
                                     <span>Subtotal</span>
-                                    <span className="text-gray-900 font-mono">₹{order.subtotal.toLocaleString()}</span>
+                                    <span className="text-gray-900 font-mono">{currencySymbol}{order.subtotal.toLocaleString()}</span>
                                 </div>
                                 <div className="flex justify-between text-[10px] font-bold text-gray-500 uppercase tracking-widest">
                                     <span>Tax (GST 18%)</span>
-                                    <span className="text-gray-900 font-mono">₹{order.taxPrice.toLocaleString()}</span>
+                                    <span className="text-gray-900 font-mono">{currencySymbol}{order.taxPrice.toLocaleString()}</span>
                                 </div>
                                 <div className="pt-4 border-t border-gray-100 flex justify-between items-center">
                                     <span className="text-xs md:text-sm font-black uppercase">Grand Total</span>
-                                    <span className="text-lg md:text-xl font-black text-blue-600 font-mono">₹{order.totalPrice.toLocaleString()}</span>
+                                    <span className="text-lg md:text-xl font-black text-blue-600 font-mono">{currencySymbol}{order.totalPrice.toLocaleString()}</span>
                                 </div>
                             </div>
                         </div>
@@ -202,7 +204,7 @@ const CustomerOrderDetail = () => {
                 <div className="flex justify-between items-start mb-10 pb-6 border-b border-gray-200">
                     <div>
                         <img src="/img/logo.png" alt="Logo" className="h-12 w-auto mb-2" />
-                        <h1 className="text-xl font-black uppercase tracking-tighter">Vagwiin Core</h1>
+                        <h1 className="text-xl font-black uppercase tracking-tighter">{settings.siteName}</h1>
                         <p className="text-[10px] text-gray-500 font-bold">Premium Refurbished Electronics</p>
                     </div>
                     <div className="text-right">
@@ -224,11 +226,10 @@ const CustomerOrderDetail = () => {
                     </div>
                     <div>
                         <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">AUTHORIZED SELLER</h4>
-                        <p className="text-sm font-black text-gray-900">Vagwiin Core Pvt Ltd.</p>
+                        <p className="text-sm font-black text-gray-900">{settings.siteName} Core Pvt Ltd.</p>
                         <p className="text-[11px] text-gray-600 leading-normal">
-                            Sector 45, Gurgaon, Haryana, 122003<br />
-                            GST: 06ABCDE1234F1Z5<br />
-                            Email: support@vagwiin.com
+                            {settings.address}<br />
+                            Email: {settings.contactEmail}
                         </p>
                     </div>
                 </div>
@@ -259,8 +260,8 @@ const CustomerOrderDetail = () => {
                                     )}
                                 </td>
                                 <td className="py-4 text-center text-xs font-bold text-gray-600">{item.quantity}</td>
-                                <td className="py-4 text-right text-xs font-bold text-gray-600">₹{item.price.toLocaleString()} x {item.quantity}</td>
-                                <td className="py-4 text-right text-xs font-black text-gray-900">₹{(item.price * item.quantity).toLocaleString()}</td>
+                                <td className="py-4 text-right text-xs font-bold text-gray-600">{currencySymbol}{item.price.toLocaleString()} x {item.quantity}</td>
+                                <td className="py-4 text-right text-xs font-black text-gray-900">{currencySymbol}{(item.price * item.quantity).toLocaleString()}</td>
                             </tr>
                         ))}
                     </tbody>
@@ -270,15 +271,15 @@ const CustomerOrderDetail = () => {
                     <div className="w-64 space-y-2">
                         <div className="flex justify-between text-xs font-bold text-gray-500 uppercase">
                             <span>Subtotal</span>
-                            <span className="text-gray-900">₹{order.subtotal.toLocaleString()}</span>
+                            <span className="text-gray-900">{currencySymbol}{order.subtotal.toLocaleString()}</span>
                         </div>
                         <div className="flex justify-between text-xs font-bold text-gray-500 uppercase pb-4">
                             <span>Tax (GST 18%)</span>
-                            <span className="text-gray-900">₹{order.taxPrice.toLocaleString()}</span>
+                            <span className="text-gray-900">{currencySymbol}{order.taxPrice.toLocaleString()}</span>
                         </div>
                         <div className="pt-4 border-t-2 border-slate-900 flex justify-between items-center">
                             <span className="text-sm font-black uppercase">Grand Total</span>
-                            <span className="text-2xl font-black text-slate-900">₹{order.totalPrice.toLocaleString()}</span>
+                            <span className="text-2xl font-black text-slate-900">{currencySymbol}{order.totalPrice.toLocaleString()}</span>
                         </div>
                     </div>
                 </div>

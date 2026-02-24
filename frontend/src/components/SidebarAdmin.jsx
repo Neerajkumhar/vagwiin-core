@@ -72,7 +72,7 @@ const SidebarAdmin = ({ isOpen, onClose }) => {
                 </div>
 
                 <div className="mt-auto p-4 border-t border-gray-50 lg:border-slate-800 space-y-2">
-                    <SidebarLink icon={Settings} label="Global Settings" to="/admin" active={location.pathname === '/settings'} onClose={onClose} />
+                    <SidebarLink icon={Settings} label="Global Settings" to="/admin/settings" active={location.pathname === '/admin/settings'} onClose={onClose} />
                     <button className="flex lg:hidden items-center gap-3 w-full px-4 py-3 text-sm font-bold text-red-500 bg-red-50 rounded-xl transition-all active:scale-95">
                         <LogOut size={18} />
                         Sign Out

@@ -4,8 +4,10 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import TopBar from './TopBar';
 import authService from '../services/authService';
 import { useCart } from '../context/CartContext';
+import { useSettings } from '../context/SettingsContext';
 
 const Navbar = ({ onToggleSidebar }) => {
+    const { settings } = useSettings();
     const { cartCount, refreshCart } = useCart();
     const location = useLocation();
     const navigate = useNavigate();
@@ -15,6 +17,12 @@ const Navbar = ({ onToggleSidebar }) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+
+    useEffect(() => {
+        if (settings?.siteName) {
+            document.title = `${settings.siteName} | Premium Heritage Tech`;
+        }
+    }, [settings?.siteName]);
 
     useEffect(() => {
         if (user) {
@@ -215,7 +223,7 @@ const Navbar = ({ onToggleSidebar }) => {
                     <div className="absolute right-0 top-0 bottom-0 w-3/4 max-w-sm bg-white shadow-2xl animate-in slide-in-from-right-full duration-300">
                         <div className="p-6 flex flex-col h-full">
                             <div className="flex items-center justify-between mb-8">
-                                <span className="font-black text-xl text-gray-900 tracking-tighter italic">VAGWIIN.</span>
+                                <span className="font-black text-xl text-gray-900 tracking-tighter italic">{settings.siteName.toUpperCase()}.</span>
                                 <button onClick={toggleMenu} className="p-2 hover:bg-gray-100 rounded-lg text-gray-400">
                                     <LogOut size={20} className="rotate-180" />
                                 </button>
